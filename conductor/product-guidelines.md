@@ -1,21 +1,24 @@
-# Product Guidelines
+# Product Guidelines - Horde Forged
 
 ## Tone and Style
-Epic and serious: Focus on grand narratives, a rich fantasy world, and a mature aesthetic. The game's narrative will weave complex lore, heroic sagas, and morally ambiguous conflicts. Visuals will lean towards a detailed, high-fidelity art style with a muted color palette to enhance the serious tone.
+**Tone**: Grimdark fantasy—echoing hammers, goo drips, undead moans. Heroes' banter: "Another fool's gold... or my fortune?" The narrative will unfold via runs, revealing the corruption saga of the Volgrim Crucible.
 
 ## Brand Messaging
-The brand messaging will emphasize challenge, strategic depth, and immersive storytelling. We aim to position "HordeForged" as a premium mobile strategy experience that respects player intelligence and offers substantial content. Keywords: Epic, Strategic, Immersive, Challenging, Rich Lore.
+The brand messaging will emphasize the roguelite horde survival, rune-forged RPG progression, and mobile perfection with 1-thumb controls. It will highlight the power fantasy, dopamine loops from rapid progression and loot, and thematic immersion in a dwarven decay setting.
 
 ## Visual Identity
-*   **Art Style:** Realistic, dark fantasy aesthetic. Detailed character models and environmental textures. Emphasis on atmospheric lighting and particle effects.
-*   **User Interface (UI):** Functional and elegant, with a focus on readability and clear information hierarchy. UI elements will incorporate motifs from the game's lore (e.g., weathered stone, ancient metals).
-*   **Color Palette:** Dominated by darker tones (grays, deep blues, forest greens, earthy browns), with occasional vibrant accents for magical effects or rare items.
-*   **Typography:** Strong, legible fonts that evoke a sense of fantasy and grandeur, suitable for both titles and body text.
+**Art Style**: 16-32px Top-Down Pixel Art (NES/SNES-inspired, crisp scaling).
+**Visuals** (16px base, 4x upscale):
+- Heroes: Silhouetted sprites (idle animations: rune glows).
+- Ruins: Volcanic stone, goo veins (purple ooze), rusted gears.
+- Effects: Particle bursts (crystals shatter), Synergy fuses (sparks merge icons).
+- Dynamic: Fog of Blight (screen edges); Lighting from forges.
 
 ## Audio Design
-*   **Music:** Orchestral, epic scores that adapt to gameplay situations (e.g., tension during battles, calm during resource management).
-*   **Sound Effects:** Impactful and realistic, enhancing the feeling of combat, resource gathering, and magical abilities.
-*   **Voice Acting:** Professional voice acting for key characters and narrative moments to deepen immersion.
+**Audio**:
+- SFX: Hammer thuds, goo squelch, crystal chimes (haptic sync).
+- Music: Chiptune-orchestral (tense build → epic crescendo).
+- Voice: Dwarven grunts; Priest whispers ("Impure... eternal!").
 
 ## Content Guidelines
-All in-game content, including text, art, and sound, must align with the epic and serious tone. Humor should be subtle and situational, not undermining the overall gravitas. Lore consistency is paramount.
+All in-game content, including text, art, and sound, must align with the grimdark fantasy tone and thematic immersion of dwarven decay and corruption. Lore consistency, particularly around the Volgrim Crucible, Impure Adamantium, and the Blight Essence, is paramount. Accessibility features like auto-vacuum toggle, slow-mo, and big touch zones should be maintained.
