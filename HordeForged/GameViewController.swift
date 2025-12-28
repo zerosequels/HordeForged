@@ -25,6 +25,14 @@ class GameViewController: UIViewController {
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if let skView = self.view.subviews.first as? SKView {
+            skView.scene?.size = skView.bounds.size
+        }
+    }
 }
 
 // MARK: - GameViewRepresentable (Bridge SwiftUI to UIKit)
