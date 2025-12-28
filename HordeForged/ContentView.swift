@@ -25,6 +25,10 @@ struct MainGameView: View {
         PlayerInfoView()
     }
 
+    var actionBarView: some View {
+        ActionBarView()
+    }
+
     var body: some View {
         ZStack {
             self.background
@@ -34,20 +38,7 @@ struct MainGameView: View {
                 
                 Spacer()
                 
-                // Action Bar Placeholder
-                HStack {
-                    Button("Attack") {}
-                        .padding()
-                        .background(Color.bloodRed.opacity(0.6))
-                        .cornerRadius(8)
-                    Button("Skill") {}
-                        .padding()
-                        .background(Color.hordeGold.opacity(0.6))
-                        .cornerRadius(8)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.steelGray.opacity(0.3))
+                self.actionBarView
             }
         }
     }

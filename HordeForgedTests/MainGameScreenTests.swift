@@ -19,5 +19,12 @@ final class MainGameScreenTests: XCTestCase {
         XCTAssertNotNil(view.playerInfoView)
     }
 
+    func testActionBarViewIsIntegrated() {
+        let view = MainGameView()
+        XCTAssertNotNil(view.actionBarView)
+    }
+
+
+
 
 }
