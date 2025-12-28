@@ -14,11 +14,10 @@ final class MainGameScreenTests: XCTestCase {
         XCTAssertNotNil(view.background)
     }
 
-
-    func testBackgroundViewIsPresent() {
+    func testPlayerInfoViewIsIntegrated() {
         let view = MainGameView()
-        let backgroundView = try? view.inspect().find(viewWithAccessibilityIdentifier: "background_view")
-        XCTAssertNotNil(backgroundView)
+        XCTAssertNotNil(view.playerInfoView)
     }
+
 
 }

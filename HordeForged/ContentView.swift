@@ -21,18 +21,16 @@ struct MainGameView: View {
             .ignoresSafeArea()
     }
 
+    var playerInfoView: some View {
+        PlayerInfoView()
+    }
+
     var body: some View {
         ZStack {
             self.background
             
             VStack {
-                // Player Info Placeholder
-                Text("Player Name | HP: 100 | Gold: 0")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.steelGray.opacity(0.3))
-                    .cornerRadius(8)
+                self.playerInfoView
                 
                 Spacer()
                 
