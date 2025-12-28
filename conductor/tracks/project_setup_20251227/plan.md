@@ -12,10 +12,10 @@ To create a runnable Xcode project with the foundational app structure and game 
   - [ ] Write Failing Tests: (N/A for project creation)
   - [x] Implement to Pass Tests: Initialize an empty iOS project in Xcode.
   - [ ] Refactor: Review project settings and structure for cleanliness.
-- [ ] Task: Configure basic app lifecycle
-  - [ ] Write Failing Tests: (N/A for initial configuration, but consider testing launch screen presence via UI tests later)
-  - [ ] Implement to Pass Tests: Configure `Info.plist` for portrait/landscape orientation support and set up a default launch screen.
-  - [ ] Refactor: Ensure orientation changes are handled smoothly.
+- [x] Task: Configure basic app lifecycle 2538378
+  - [x] Write Failing Tests: (N/A for initial configuration, but consider testing launch screen presence via UI tests later)
+  - [x] Implement to Pass Tests: Configure `Info.plist` for portrait/landscape orientation support and set up a default launch screen.
+  - [x] Refactor: Ensure orientation changes are handled smoothly.
 - [ ] Task: Implement UIKit View Controller and SKView (Bridge SwiftUI to UIKit)
   - [ ] Write Failing Tests: Create a basic UI test to confirm `SKView` is present and visible within the `UIViewController` hosted in SwiftUI.
   - [ ] Implement to Pass Tests:
