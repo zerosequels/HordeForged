@@ -2,7 +2,7 @@
 
 This plan outlines the steps to initialize the Xcode project, set up core architectural patterns (ECS for game logic, UIKit+SpriteKit for UI/scene), and establish basic infrastructure for "Horde Forged."
 
-## Phase 1: Xcode Project and Basic Structure [checkpoint: 3cf48b5]
+## Phase 1: Xcode Project and Basic Structure [checkpoint: e39684d]
 
 ### Objective
 To create a runnable Xcode project with the foundational app structure and game scene presentation.
@@ -36,7 +36,7 @@ To establish the basic ECS framework and implement the `Codable` file-based stor
   - [ ] Write Failing Tests: Create unit tests for `Component` protocol and a sample concrete component (e.g., `PositionComponent`) to ensure data encapsulation.
   - [ ] Implement to Pass Tests: Define a `Component` protocol and implement basic component structs/classes (e.g., `PositionComponent`, `HealthComponent`).
   - [ ] Refactor: Ensure components are lightweight and data-only.
-- [ ] Task: Implement foundational ECS entity
+- [~] Task: Implement foundational ECS entity
   - [ ] Write Failing Tests: Create unit tests for an `Entity` class/struct to ensure it can hold unique IDs and a collection of `Component`s.
   - [ ] Implement to Pass Tests: Define an `Entity` struct/class capable of holding a unique identifier and a dictionary/array of `Component`s.
   - [ ] Refactor: Optimize entity creation and component lookup.
