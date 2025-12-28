@@ -28,7 +28,7 @@ This plan outlines the steps to implement the foundational UI for the main game 
     - [x] Task: Implement Player Info View Integration (embed component into main screen layout)
 - [x] Task: Conductor - User Manual Verification 'Player Information Display Integration' (Protocol in workflow.md)
 
-## Phase 3: Action Bar and Navigation Stubs
+## Phase 3: Action Bar and Navigation Stubs [checkpoint: 095b019]
 
 - [x] Task: Create Action Bar View Component 0d71ed8
     - [x] Task: Write Failing Tests for Action Bar View (presence of placeholder action buttons)
@@ -39,4 +39,4 @@ This plan outlines the steps to implement the foundational UI for the main game 
 - [x] Task: Create Navigation Button Stubs bf2a281
     - [x] Task: Write Failing Tests for Navigation Stubs (presence of navigation buttons)
     - [x] Task: Implement Navigation Button Stubs (placeholder buttons for accessing other game sections)
-- [~] Task: Conductor - User Manual Verification 'Action Bar and Navigation Stubs' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Action Bar and Navigation Stubs' (Protocol in workflow.md)
