@@ -2,7 +2,7 @@
 
 This plan outlines the steps to initialize the Xcode project, set up core architectural patterns (ECS for game logic, UIKit+SpriteKit for UI/scene), and establish basic infrastructure for "Horde Forged."
 
-## Phase 1: Xcode Project and Basic Structure
+## Phase 1: Xcode Project and Basic Structure [checkpoint: 3cf48b5]
 
 ### Objective
 To create a runnable Xcode project with the foundational app structure and game scene presentation.
