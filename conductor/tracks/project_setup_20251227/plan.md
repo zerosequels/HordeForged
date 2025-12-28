@@ -32,14 +32,14 @@ To create a runnable Xcode project with the foundational app structure and game 
 ### Objective
 To establish the basic ECS framework and implement the `Codable` file-based storage for meta-progression.
 
-- [~] Task: Implement foundational ECS components
-  - [ ] Write Failing Tests: Create unit tests for `Component` protocol and a sample concrete component (e.g., `PositionComponent`) to ensure data encapsulation.
-  - [ ] Implement to Pass Tests: Define a `Component` protocol and implement basic component structs/classes (e.g., `PositionComponent`, `HealthComponent`).
-  - [ ] Refactor: Ensure components are lightweight and data-only.
-- [~] Task: Implement foundational ECS entity
-  - [ ] Write Failing Tests: Create unit tests for an `Entity` class/struct to ensure it can hold unique IDs and a collection of `Component`s.
-  - [ ] Implement to Pass Tests: Define an `Entity` struct/class capable of holding a unique identifier and a dictionary/array of `Component`s.
-  - [ ] Refactor: Optimize entity creation and component lookup.
+- [x] Task: Implement foundational ECS components 8959659
+  - [x] Write Failing Tests: Create unit tests for `Component` protocol and a sample concrete component (e.g., `PositionComponent`) to ensure data encapsulation.
+  - [x] Implement to Pass Tests: Define a `Component` protocol and implement basic component structs/classes (e.g., `PositionComponent`, `HealthComponent`).
+  - [x] Refactor: Ensure components are lightweight and data-only.
+- [x] Task: Implement foundational ECS entity 8959659
+  - [x] Write Failing Tests: Create unit tests for an `Entity` class/struct to ensure it can hold unique IDs and a collection of `Component`s.
+  - [x] Implement to Pass Tests: Define an `Entity` struct/class capable of holding a unique identifier and a dictionary/array of `Component`s.
+  - [x] Refactor: Optimize entity creation and component lookup.
 - [ ] Task: Implement foundational ECS system
   - [ ] Write Failing Tests: Create unit tests for a `System` protocol/class and a sample system (e.g., `UpdatePositionSystem`) to ensure it can iterate over entities with specific components.
   - [ ] Implement to Pass Tests: Define a `System` protocol/class and implement a basic system (e.g., a system that updates positions based on a `VelocityComponent` and `PositionComponent`).
