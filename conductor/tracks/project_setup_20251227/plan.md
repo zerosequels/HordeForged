@@ -32,7 +32,7 @@ To create a runnable Xcode project with the foundational app structure and game 
 ### Objective
 To establish the basic ECS framework and implement the `Codable` file-based storage for meta-progression.
 
-- [ ] Task: Implement foundational ECS components
+- [~] Task: Implement foundational ECS components
   - [ ] Write Failing Tests: Create unit tests for `Component` protocol and a sample concrete component (e.g., `PositionComponent`) to ensure data encapsulation.
   - [ ] Implement to Pass Tests: Define a `Component` protocol and implement basic component structs/classes (e.g., `PositionComponent`, `HealthComponent`).
   - [ ] Refactor: Ensure components are lightweight and data-only.
