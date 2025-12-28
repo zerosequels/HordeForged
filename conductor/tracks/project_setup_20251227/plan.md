@@ -25,7 +25,7 @@ To create a runnable Xcode project with the foundational app structure and game 
     - Create a `UIViewControllerRepresentable` struct to bridge `GameViewController` to SwiftUI.
     - Update `ContentView` or `HordeForgedApp` to display the bridge.
   - [x] Refactor: Ensure proper setup and tear down of the `SKView` and `SKScene` within the view controller lifecycle.
-- [ ] Task: Conductor - User Manual Verification 'Xcode Project and Basic Structure' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Xcode Project and Basic Structure' (Protocol in workflow.md) e39684d
 
 ## Phase 2: ECS Foundation and Offline Storage
 
