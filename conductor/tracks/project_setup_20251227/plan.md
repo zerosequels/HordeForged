@@ -7,20 +7,23 @@ This plan outlines the steps to initialize the Xcode project, set up core archit
 ### Objective
 To create a runnable Xcode project with the foundational app structure and game scene presentation.
 
-- [ ] Task: Create new Xcode project
+- [x] Task: Create new Xcode project
+  - Note: User confirmed project created with App template (SwiftUI lifecycle).
   - [ ] Write Failing Tests: (N/A for project creation)
-  - [ ] Implement to Pass Tests: Initialize an empty iOS project in Xcode, selecting the "Game" template with SpriteKit.
+  - [x] Implement to Pass Tests: Initialize an empty iOS project in Xcode.
   - [ ] Refactor: Review project settings and structure for cleanliness.
 - [ ] Task: Configure basic app lifecycle
   - [ ] Write Failing Tests: (N/A for initial configuration, but consider testing launch screen presence via UI tests later)
   - [ ] Implement to Pass Tests: Configure `Info.plist` for portrait/landscape orientation support and set up a default launch screen.
   - [ ] Refactor: Ensure orientation changes are handled smoothly.
-- [ ] Task: Implement UIKit View Controller and SKView
-  - [ ] Write Failing Tests: Create a basic UI test to confirm `SKView` is present and visible within the `UIViewController`.
+- [ ] Task: Implement UIKit View Controller and SKView (Bridge SwiftUI to UIKit)
+  - [ ] Write Failing Tests: Create a basic UI test to confirm `SKView` is present and visible within the `UIViewController` hosted in SwiftUI.
   - [ ] Implement to Pass Tests:
     - Create a `GameViewController` (subclass of `UIViewController`).
     - Instantiate an `SKView` within `GameViewController`'s view hierarchy.
     - Set up the `SKView` to present an initial, empty `SKScene`.
+    - Create a `UIViewControllerRepresentable` struct to bridge `GameViewController` to SwiftUI.
+    - Update `ContentView` or `HordeForgedApp` to display the bridge.
   - [ ] Refactor: Ensure proper setup and tear down of the `SKView` and `SKScene` within the view controller lifecycle.
 - [ ] Task: Conductor - User Manual Verification 'Xcode Project and Basic Structure' (Protocol in workflow.md)
 
