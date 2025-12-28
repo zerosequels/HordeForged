@@ -16,11 +16,14 @@ extension Color {
 }
 
 struct MainGameView: View {
+    var background: some View {
+        Color.abyssBlack
+            .ignoresSafeArea()
+    }
+
     var body: some View {
         ZStack {
-            // Use the new color
-            Color.abyssBlack
-                .ignoresSafeArea()
+            self.background
             
             VStack {
                 // Player Info Placeholder

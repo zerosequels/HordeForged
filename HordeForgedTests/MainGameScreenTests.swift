@@ -8,4 +8,17 @@ final class MainGameScreenTests: XCTestCase {
         let view = MainGameView()
         XCTAssertNotNil(view)
     }
+
+    func testBackgroundPropertyIsSet() {
+        let view = MainGameView()
+        XCTAssertNotNil(view.background)
+    }
+
+
+    func testBackgroundViewIsPresent() {
+        let view = MainGameView()
+        let backgroundView = try? view.inspect().find(viewWithAccessibilityIdentifier: "background_view")
+        XCTAssertNotNil(backgroundView)
+    }
+
 }
