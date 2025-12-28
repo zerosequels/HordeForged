@@ -7,11 +7,18 @@
 
 import SwiftUI
 
+extension Color {
+    static let hordeGold = Color(red: 0.8, green: 0.7, blue: 0.1)
+    static let abyssBlack = Color(red: 0.1, green: 0.1, blue: 0.1)
+    static let bloodRed = Color(red: 0.7, green: 0.1, blue: 0.1)
+    static let steelGray = Color(red: 0.6, green: 0.6, blue: 0.6)
+}
+
 struct MainGameView: View {
     var body: some View {
         ZStack {
-            // Placeholder background
-            Color.black.opacity(0.9) // Dark aesthetic
+            // Use the new color
+            Color.abyssBlack
                 .ignoresSafeArea()
             
             VStack {
@@ -20,7 +27,7 @@ struct MainGameView: View {
                     .font(.headline)
                     .foregroundColor(.white)
                     .padding()
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.steelGray.opacity(0.3))
                     .cornerRadius(8)
                 
                 Spacer()
@@ -29,16 +36,16 @@ struct MainGameView: View {
                 HStack {
                     Button("Attack") {}
                         .padding()
-                        .background(Color.red.opacity(0.6))
+                        .background(Color.bloodRed.opacity(0.6))
                         .cornerRadius(8)
                     Button("Skill") {}
                         .padding()
-                        .background(Color.blue.opacity(0.6))
+                        .background(Color.hordeGold.opacity(0.6))
                         .cornerRadius(8)
                 }
                 .foregroundColor(.white)
                 .padding()
-                .background(Color.gray.opacity(0.3))
+                .background(Color.steelGray.opacity(0.3))
             }
         }
     }
