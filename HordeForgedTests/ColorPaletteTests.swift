@@ -8,4 +8,11 @@ final class ColorPaletteTests: XCTestCase {
         let gold = Color.hordeGold
         XCTAssertNotNil(gold)
     }
+
+    func testShadowGrayColorExists() {
+        // This test will fail until 'shadowGray' is defined in the Color extension
+        let shadowGray = Color.shadowGray
+        XCTAssertNotNil(shadowGray)
+    }
+
 }

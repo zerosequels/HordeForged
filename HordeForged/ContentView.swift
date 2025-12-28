@@ -12,6 +12,7 @@ extension Color {
     static let abyssBlack = Color(red: 0.1, green: 0.1, blue: 0.1)
     static let bloodRed = Color(red: 0.7, green: 0.1, blue: 0.1)
     static let steelGray = Color(red: 0.6, green: 0.6, blue: 0.6)
+    static let shadowGray = Color(red: 0.3, green: 0.3, blue: 0.3)
 }
 
 struct MainGameView: View {
