@@ -9,15 +9,18 @@ struct Entity {
         self.components = [:]
     }
 
-    mutating func addComponent(_ component: Component) {
-        self.components[ObjectIdentifier(type(of: component))] = component
+    // Set or update a component. If component is nil, remove it.
+    mutating func setComponent<T: Component>(_ component: T?) {
+        let typeId = ObjectIdentifier(T.self)
+        if let component = component {
+            self.components[typeId] = component
+        } else {
+            self.components[typeId] = nil
+        }
     }
 
+    // Retrieve a component of a specific type
     func getComponent<T: Component>(ofType type: T.Type) -> T? {
         return components[ObjectIdentifier(type)] as? T
-    }
-
-    mutating func removeComponent<T: Component>(ofType type: T.Type) {
-        self.components[ObjectIdentifier(type)] = nil
     }
 }

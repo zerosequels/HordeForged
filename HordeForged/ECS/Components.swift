@@ -11,3 +11,9 @@ struct HealthComponent: Component {
     var currentHealth: Int
     var maxHealth: Int
 }
+
+struct VelocityComponent: Component {
+    var id = UUID()
+    var dx: Float
+    var dy: Float
+}
