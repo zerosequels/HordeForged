@@ -20,9 +20,9 @@ This plan outlines the steps to implement the foundational UI for the main game 
 
 ## Phase 2: Player Information Display Integration
 
-- [ ] Task: Create Player Info View Component
-    - [ ] Task: Write Failing Tests for Player Info View (display of player name, placeholder resources)
-    - [ ] Task: Implement Player Info View (simple display of player name and resource labels)
+- [x] Task: Create Player Info View Component c10c26b
+    - [x] Task: Write Failing Tests for Player Info View (display of player name, placeholder resources)
+    - [x] Task: Implement Player Info View (simple display of player name and resource labels)
 - [ ] Task: Integrate Player Info View into Main Game Screen
     - [ ] Task: Write Failing Tests for Player Info Integration (ensure Player Info View is correctly positioned)
     - [ ] Task: Implement Player Info View Integration (embed component into main screen layout)
