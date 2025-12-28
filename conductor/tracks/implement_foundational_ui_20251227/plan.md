@@ -7,12 +7,12 @@ This plan outlines the steps to implement the foundational UI for the main game 
 - [x] Task: Create initial SwiftUI View for Main Game Screen 1d958c5
     - [x] Task: Write Failing Tests for Main Game Screen View (basic structure, presence of key elements)
     - [x] Task: Implement Main Game Screen View (placeholder background, basic layout for player info, action bar)
-- [ ] Task: Define and integrate core UI color palette
-    - [ ] Task: Write Failing Tests for Color Palette (ensure colors are defined as per guidelines)
-    - [ ] Task: Implement Color Palette (define SwiftUI Color extensions or asset catalog colors)
-- [ ] Task: Define and integrate core UI typography
-    - [ ] Task: Write Failing Tests for Typography (ensure fonts are defined as per guidelines)
-    - [ ] Task: Implement Typography (define SwiftUI Font extensions or custom fonts)
+- [x] Task: Define and integrate core UI color palette
+    - [x] Task: Write Failing Tests for Color Palette (ensure colors are defined as per guidelines)
+    - [x] Task: Implement Color Palette (define SwiftUI Color extensions or asset catalog colors)
+- [x] Task: Define and integrate core UI typography 9b3671e
+    - [x] Task: Write Failing Tests for Typography (ensure fonts are defined as per guidelines)
+    - [x] Task: Implement Typography (define SwiftUI Font extensions or custom fonts)
 - [ ] Task: Implement Placeholder Background
     - [ ] Task: Write Failing Tests for Background (ensure background view is present)
     - [ ] Task: Implement Placeholder Background (simple dark-themed background that fits the epic/serious aesthetic)
