@@ -33,9 +33,9 @@ This plan outlines the steps to implement the foundational UI for the main game 
 - [x] Task: Create Action Bar View Component 0d71ed8
     - [x] Task: Write Failing Tests for Action Bar View (presence of placeholder action buttons)
     - [x] Task: Implement Action Bar View (simple layout with placeholder buttons for actions)
-- [ ] Task: Integrate Action Bar View into Main Game Screen
-    - [ ] Task: Write Failing Tests for Action Bar Integration (ensure Action Bar View is correctly positioned)
-    - [ ] Task: Implement Action Bar View Integration (embed component into main screen layout)
+- [x] Task: Integrate Action Bar View into Main Game Screen bc20192
+    - [x] Task: Write Failing Tests for Action Bar Integration (ensure Action Bar View is correctly positioned)
+    - [x] Task: Implement Action Bar View Integration (embed component into main screen layout)
 - [ ] Task: Create Navigation Button Stubs
     - [ ] Task: Write Failing Tests for Navigation Stubs (presence of navigation buttons)
     - [ ] Task: Implement Navigation Button Stubs (placeholder buttons for accessing other game sections)
