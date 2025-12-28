@@ -38,4 +38,15 @@ final class HordeForgedUITests: XCTestCase {
             XCUIApplication().launch()
         }
     }
+
+    @MainActor
+    func testSKViewIsPresentAndVisible() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        // We expect an element with accessibility identifier "GameSKView" to be present
+        // This test will fail until the SKView is implemented and given this identifier.
+        let skViewElement = app.otherElements["GameSKView"]
+        XCTAssertTrue(skViewElement.exists, "SKView with identifier 'GameSKView' should be present and visible.")
+    }
 }

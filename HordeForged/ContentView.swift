@@ -16,29 +16,17 @@ extension Color {
 }
 
 struct MainGameView: View {
-    var background: some View {
-        Color.abyssBlack
-            .ignoresSafeArea()
-    }
-
-    var playerInfoView: some View {
-        PlayerInfoView()
-    }
-
-    var actionBarView: some View {
-        ActionBarView()
-    }
-
     var body: some View {
         ZStack {
-            self.background
-            
+            GameViewRepresentable() // The SKView content will go here
+                .ignoresSafeArea()
+
             VStack {
-                self.playerInfoView
+                PlayerInfoView()
                 
                 Spacer()
                 
-                self.actionBarView
+                ActionBarView()
             }
         }
     }
