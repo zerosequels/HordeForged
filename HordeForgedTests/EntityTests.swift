@@ -1,41 +1,38 @@
 import XCTest
+internal import GameplayKit
+import SpriteKit
 @testable import HordeForged
 
 final class EntityTests: XCTestCase {
 
-    func testEntityCanBeCreatedWithID() {
-        let entity = Entity()
-        XCTAssertNotNil(entity.id)
+    func testSurvivorEntityCreation() {
+        let entity = SurvivorEntity(color: .blue, size: CGSize(width: 10, height: 10))
+        
+        // SurvivorEntity should have SpriteComponent and MovementComponent by default
+        XCTAssertNotNil(entity.component(ofType: SpriteComponent.self))
+        XCTAssertNotNil(entity.component(ofType: MovementComponent.self))
     }
 
-    func testEntityCanAddComponent() {
-        var entity = Entity()
-        let position = PositionComponent(x: 1.0, y: 2.0)
-        entity.addComponent(position)
-        XCTAssertNotNil(entity.getComponent(ofType: PositionComponent.self))
-    }
-
-    func testEntityCanRetrieveComponent() {
-        var entity = Entity()
-        let health = HealthComponent(currentHealth: 10, maxHealth: 10)
-        entity.addComponent(health)
-        let retrievedHealth = entity.getComponent(ofType: HealthComponent.self)
-        XCTAssertEqual(retrievedHealth?.currentHealth, 10)
+    func testEntityCanAddGenericComponent() {
+        let entity = GKEntity()
+        let component = MovementComponent()
+        entity.addComponent(component)
+        
+        XCTAssertNotNil(entity.component(ofType: MovementComponent.self))
     }
 
     func testEntityReturnsNilForMissingComponent() {
-        let entity = Entity()
-        let missingComponent: PositionComponent? = entity.getComponent(ofType: PositionComponent.self)
-        XCTAssertNil(missingComponent)
+        let entity = GKEntity()
+        XCTAssertNil(entity.component(ofType: SpriteComponent.self))
     }
 
     func testEntityCanRemoveComponent() {
-        var entity = Entity()
-        let position = PositionComponent(x: 1.0, y: 2.0)
-        entity.addComponent(position)
-        XCTAssertNotNil(entity.getComponent(ofType: PositionComponent.self))
-
-        entity.removeComponent(ofType: PositionComponent.self)
-        XCTAssertNil(entity.getComponent(ofType: PositionComponent.self))
+        let entity = GKEntity()
+        let component = MovementComponent()
+        entity.addComponent(component)
+        XCTAssertNotNil(entity.component(ofType: MovementComponent.self))
+        
+        entity.removeComponent(ofType: MovementComponent.self)
+        XCTAssertNil(entity.component(ofType: MovementComponent.self))
     }
 }

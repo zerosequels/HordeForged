@@ -1,43 +1,43 @@
 import XCTest
+internal import GameplayKit
+import SpriteKit
 @testable import HordeForged
 
 final class SystemTests: XCTestCase {
 
-    func testSystemProtocolCanBeAdopted() {
-        // Test that a struct can conform to a hypothetical System protocol
-        struct TestSystem: System {
-            func update(entities: inout [Entity], deltaTime: TimeInterval) {
-                // Do nothing for this test
-            }
-        }
-        let system = TestSystem()
-        XCTAssertNotNil(system)
+    func testMovementComponentUpdatesPosition() {
+        // Setup Entity
+        let entity = GKEntity()
+        
+        // Setup Components
+        let spriteComponent = SpriteComponent(color: .red, size: CGSize(width: 10, height: 10))
+        spriteComponent.node.position = CGPoint(x: 0, y: 0)
+        entity.addComponent(spriteComponent)
+        
+        let movementComponent = MovementComponent()
+        movementComponent.velocity = CGVector(dx: 1.0, dy: 0.0)
+        movementComponent.movementSpeed = 100.0
+        entity.addComponent(movementComponent)
+        
+        // Perform Update
+        // Delta time 1.0 -> Move 100 units right
+        movementComponent.update(deltaTime: 1.0)
+        
+        XCTAssertEqual(Double(spriteComponent.node.position.x), 100.0, accuracy: 0.001)
+        XCTAssertEqual(Double(spriteComponent.node.position.y), 0.0, accuracy: 0.001)
     }
 
-    func testUpdatePositionSystemUpdatesPositionComponent() {
-        var entity = Entity()
-        entity.setComponent(PositionComponent(x: 0.0, y: 0.0))
-        entity.setComponent(VelocityComponent(dx: 1.0, dy: 1.0))
-
-        var entities = [entity]
-        let system = UpdatePositionSystem()
-        system.update(entities: &entities, deltaTime: 1.0)
-
-        let updatedPosition = entities[0].getComponent(ofType: PositionComponent.self)
-        XCTAssertEqual(updatedPosition?.x, 1.0)
-        XCTAssertEqual(updatedPosition?.y, 1.0)
-    }
-
-    func testUpdatePositionSystemIgnoresEntitiesWithoutRequiredComponents() {
-        var entity = Entity()
-        entity.setComponent(PositionComponent(x: 0.0, y: 0.0))
-
-        var entities = [entity]
-        let system = UpdatePositionSystem()
-        system.update(entities: &entities, deltaTime: 1.0)
-
-        let updatedPosition = entities[0].getComponent(ofType: PositionComponent.self)
-        XCTAssertEqual(updatedPosition?.x, 0.0) // Should not change
-        XCTAssertEqual(updatedPosition?.y, 0.0) // Should not change
+    func testMovementComponentIgnoresMissingSpriteComponent() {
+        // Setup Entity without SpriteComponent
+        let entity = GKEntity()
+        
+        let movementComponent = MovementComponent()
+        movementComponent.velocity = CGVector(dx: 1.0, dy: 0.0)
+        entity.addComponent(movementComponent)
+        
+        // Perform Update - Should verify no crash
+        movementComponent.update(deltaTime: 1.0)
+        
+        XCTAssertTrue(true, "Update called without crash despite missing SpriteComponent")
     }
 }

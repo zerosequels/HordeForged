@@ -20,8 +20,8 @@ class GameViewController: UIViewController {
             skView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         ])
 
-        // Present an empty SKScene
-        let scene = SKScene(size: view.bounds.size)
+        // Present the GameScene
+        let scene = GameScene(size: view.bounds.size)
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
     }
