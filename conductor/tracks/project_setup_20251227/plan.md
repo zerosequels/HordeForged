@@ -27,50 +27,29 @@ To create a runnable Xcode project with the foundational app structure and game 
   - [x] Refactor: Ensure proper setup and tear down of the `SKView` and `SKScene` within the view controller lifecycle.
 - [x] Task: Conductor - User Manual Verification 'Xcode Project and Basic Structure' (Protocol in workflow.md) e39684d
 
-## Phase 2: ECS Foundation and Offline Storage
+## Phase 2: GameplayKit ECS and Offline Storage
 
 ### Objective
-To establish the basic ECS framework and implement the `Codable` file-based storage for meta-progression.
+To establish the ECS framework using Apple's native GameplayKit and implement `Codable` file-based storage for meta-progression.
 
-- [x] Task: Implement foundational ECS components 8959659
-  - [x] Write Failing Tests: Create unit tests for `Component` protocol and a sample concrete component (e.g., `PositionComponent`) to ensure data encapsulation.
-  - [x] Implement to Pass Tests: Define a `Component` protocol and implement basic component structs/classes (e.g., `PositionComponent`, `HealthComponent`).
-  - [x] Refactor: Ensure components are lightweight and data-only.
-- [x] Task: Implement foundational ECS entity 8959659
-  - [x] Write Failing Tests: Create unit tests for an `Entity` class/struct to ensure it can hold unique IDs and a collection of `Component`s.
-  - [x] Implement to Pass Tests: Define an `Entity` struct/class capable of holding a unique identifier and a dictionary/array of `Component`s.
-  - [x] Refactor: Optimize entity creation and component lookup.
-- [x] Task: Implement foundational ECS system 2105942
-  - [x] Write Failing Tests: Create unit tests for a `System` protocol/class and a sample system (e.g., `UpdatePositionSystem`) to ensure it can iterate over entities with specific components.
-  - [x] Implement to Pass Tests: Define a `System` protocol/class and implement a basic system (e.g., a system that updates positions based on a `VelocityComponent` and `PositionComponent`).
-  - [x] Refactor: Ensure systems operate purely on components and have no direct entity manipulation beyond component access.
-- [~] Task: Integrate ECS into SKScene
-  - [ ] Write Failing Tests: Create an integration test within `SKScene` to verify that entities with components can be added and systems can process them during the `update` cycle.
+- [ ] Task: Create `GKComponent` Subclasses
+  - [ ] Write Failing Tests: Create unit tests for custom `GKComponent` subclasses (e.g., `PositionComponent`, `VelocityComponent`) to ensure properties are correctly initialized.
+  - [ ] Implement to Pass Tests: Create `PositionComponent` and `VelocityComponent` as subclasses of `GKComponent`.
+  - [ ] Refactor: Ensure components are lightweight and data-only.
+- [ ] Task: Create `GKComponentSystem` for Movement
+  - [ ] Write Failing Tests: Create a unit test for an `UpdatePositionSystem` (subclass of `GKComponentSystem`) to verify it correctly processes entities with `PositionComponent` and `VelocityComponent`.
+  - [ ] Implement to Pass Tests: Create `UpdatePositionSystem` that iterates through entities and updates their positions based on velocity.
+  - [ ] Refactor: Ensure system logic is efficient.
+- [ ] Task: Integrate GameplayKit ECS into `GameScene`
+  - [ ] Write Failing Tests: Create an integration test to confirm that a `GKEntity` with components can be added to the scene's entity manager and that the `UpdatePositionSystem` modifies it during the `update` cycle.
   - [ ] Implement to Pass Tests:
-    - Modify the initial `SKScene` to manage a collection of `Entity` objects.
-    - Integrate the ECS `System` update logic into the `SKScene`'s `update(_:)` method.
-  - [ ] Refactor: Optimize entity-system interactions within the `SKScene`.
+    - Modify `GameScene` to hold a collection of `GKEntity` objects and a `GKComponentSystem`.
+    - In `GameScene`'s `update(_:)` method, call the `update(deltaTime:)` method of the component system.
+  - [ ] Refactor: Streamline the entity and system management within the scene.
 - [ ] Task: Implement Codable file-based storage
   - [ ] Write Failing Tests: Create unit tests for a `GameSave` struct (or similar) that conforms to `Codable`, and tests for a `SaveLoadManager` class to verify saving and loading of this data to a file.
   - [ ] Implement to Pass Tests:
     - Define a top-level `Codable` struct (e.g., `GameSave`) to encapsulate meta-progression data.
     - Implement a `SaveLoadManager` responsible for encoding `GameSave` to JSON/Plist and writing to a file, and decoding from file.
   - [ ] Refactor: Ensure error handling for file operations and data corruption.
-- [ ] Task: Conductor - User Manual Verification 'ECS Foundation and Offline Storage' (Protocol in workflow.md)
-
-## Phase 3: Version Control and Basic Testing
-
-### Objective
-To establish the project's version control and basic testing setup.
-
-- [ ] Task: Initialize Git repository and add .gitignore
-  - [ ] Write Failing Tests: (N/A for Git setup)
-  - [ ] Implement to Pass Tests:
-    - Initialize a Git repository in the project root if one doesn't exist.
-    - Create a `.gitignore` file suitable for Xcode projects to exclude derived data, user settings, etc.
-  - [ ] Refactor: Ensure `.gitignore` is comprehensive.
-- [ ] Task: Configure initial local testing setup
-  - [ ] Write Failing Tests: (N/A, this is a setup task)
-  - [ ] Implement to Pass Tests: Verify that the default Xcode unit test target is correctly configured and can run a basic test.
-  - [ ] Refactor: Ensure test target is properly linked to the main app target.
-- [ ] Task: Conductor - User Manual Verification 'Version Control and Basic Testing' (Protocol in workflow.md)
+- [ ] Task: Conductor - User Manual Verification 'GameplayKit ECS and Offline Storage' (Protocol in workflow.md)
