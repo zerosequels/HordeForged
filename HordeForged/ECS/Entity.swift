@@ -2,25 +2,25 @@ import Foundation
 
 struct Entity {
     let id: UUID
-    private var components: [ObjectIdentifier: Component]
+    private var components: [String: Component]
 
     init(id: UUID = UUID()) {
         self.id = id
         self.components = [:]
     }
 
-    // Set or update a component. If component is nil, remove it.
-    mutating func setComponent<T: Component>(_ component: T?) {
-        let typeId = ObjectIdentifier(T.self)
-        if let component = component {
-            self.components[typeId] = component
-        } else {
-            self.components[typeId] = nil
-        }
+    mutating func setComponent<T: Component>(_ component: T) {
+        let typeName = String(describing: T.self)
+        self.components[typeName] = component
     }
 
-    // Retrieve a component of a specific type
+    mutating func removeComponent<T: Component>(ofType type: T.Type) {
+        let typeName = String(describing: type)
+        components[typeName] = nil
+    }
+
     func getComponent<T: Component>(ofType type: T.Type) -> T? {
-        return components[ObjectIdentifier(type)] as? T
+        let typeName = String(describing: type)
+        return components[typeName] as? T
     }
 }
