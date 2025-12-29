@@ -40,11 +40,11 @@ To establish the basic ECS framework and implement the `Codable` file-based stor
   - [x] Write Failing Tests: Create unit tests for an `Entity` class/struct to ensure it can hold unique IDs and a collection of `Component`s.
   - [x] Implement to Pass Tests: Define an `Entity` struct/class capable of holding a unique identifier and a dictionary/array of `Component`s.
   - [x] Refactor: Optimize entity creation and component lookup.
-- [x] Task: Implement foundational ECS system 57d72a0
+- [x] Task: Implement foundational ECS system 2105942
   - [x] Write Failing Tests: Create unit tests for a `System` protocol/class and a sample system (e.g., `UpdatePositionSystem`) to ensure it can iterate over entities with specific components.
   - [x] Implement to Pass Tests: Define a `System` protocol/class and implement a basic system (e.g., a system that updates positions based on a `VelocityComponent` and `PositionComponent`).
   - [x] Refactor: Ensure systems operate purely on components and have no direct entity manipulation beyond component access.
-- [ ] Task: Integrate ECS into SKScene
+- [~] Task: Integrate ECS into SKScene
   - [ ] Write Failing Tests: Create an integration test within `SKScene` to verify that entities with components can be added and systems can process them during the `update` cycle.
   - [ ] Implement to Pass Tests:
     - Modify the initial `SKScene` to manage a collection of `Entity` objects.
