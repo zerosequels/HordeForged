@@ -7,6 +7,18 @@ class MovementComponent: GKComponent {
     var speedModifier: CGFloat = 1.0
     var lastDirection: CGVector = CGVector(dx: 1, dy: 0) // Default Right
     
+    // Dash Properties
+    var isDashing: Bool = false
+    var dashSpeed: CGFloat = 800.0 // Fast burst
+    var dashTimeRemaining: TimeInterval = 0
+    var dashDirection: CGVector = .zero
+    
+    func startDash(direction: CGVector, duration: TimeInterval) {
+        isDashing = true
+        dashTimeRemaining = duration
+        dashDirection = direction.normalized()
+    }
+    
     // Updates the entity's position based on velocity * dt
     override func update(deltaTime seconds: TimeInterval) {
         super.update(deltaTime: seconds)
@@ -14,6 +26,21 @@ class MovementComponent: GKComponent {
         guard let entity = entity,
               let spriteComponent = entity.component(ofType: SpriteComponent.self) else {
             return
+        }
+        
+        // Handle Dash
+        if isDashing {
+            dashTimeRemaining -= seconds
+            if dashTimeRemaining <= 0 {
+                isDashing = false
+            } else {
+                // Dash Movement
+                let amountToMove = dashDirection * dashSpeed * CGFloat(seconds)
+                let newPosition = CGPoint(x: spriteComponent.node.position.x + amountToMove.dx,
+                                          y: spriteComponent.node.position.y + amountToMove.dy)
+                spriteComponent.node.position = newPosition
+                return // Skip normal movement
+            }
         }
         
         

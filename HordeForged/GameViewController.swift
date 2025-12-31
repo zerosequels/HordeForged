@@ -42,6 +42,10 @@ class GameViewController: UIViewController {
         
         // Listen for Item Pickup Notification
         NotificationCenter.default.addObserver(self, selector: #selector(handleItemPickup(_:)), name: NSNotification.Name("ItemPickup"), object: nil)
+        
+        // Listen for App State Changes (Auto-Pause)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     @objc func handleItemPickup(_ notification: Notification) {
@@ -205,6 +209,18 @@ class GameViewController: UIViewController {
              })
         } else {
              self.skView.isPaused = false
+        }
+    }
+
+    @objc func handleWillResignActive() {
+        // Pause the game when minimizing or inactive
+        skView.isPaused = true
+    }
+    
+    @objc func handleDidBecomeActive() {
+        // Only resume if no modal is presented (Level Up, Stats, GameOver, etc.)
+        if presentedViewController == nil {
+            skView.isPaused = false
         }
     }
 

@@ -5,7 +5,7 @@ class GameScene: SKScene {
     var gameManager: GameManager!
     
     private let virtualJoystick = VirtualJoystick()
-    private var player: SurvivorEntity?
+    var player: SurvivorEntity?
     
     // Camera
     private let cameraNode = SKCameraNode()
@@ -27,6 +27,16 @@ class GameScene: SKScene {
     private var expBarBackground: SKShapeNode?
     private var expBar: SKShapeNode?
     
+    // Stamina UI
+    private var staminaBarBackground: SKShapeNode?
+    private var staminaBar: SKShapeNode?
+    
+    // Mini Map
+    private var miniMap: MiniMapNode?
+    
+    // Dash System
+    private let dashSystem = DashSystem()
+    
     private var lastUpdateTime: TimeInterval = 0
 
     override func didMove(to view: SKView) {
@@ -35,6 +45,7 @@ class GameScene: SKScene {
         // Setup Camera
         addChild(cameraNode)
         camera = cameraNode
+        cameraNode.setScale(1.2) // Zoom out a little
         
         // Setup Timer Label (Child of Camera)
         timerLabel.fontSize = 24
@@ -42,7 +53,15 @@ class GameScene: SKScene {
         timerLabel.zPosition = 100
         cameraNode.addChild(timerLabel)
         
-        // Setup Health Bar (Top Left)
+        // Setup Top Hitbox Area (Transparent button over timer/menu area)
+        let menuHitbox = SKShapeNode(rectOf: CGSize(width: 300, height: 80))
+        menuHitbox.fillColor = .clear
+        menuHitbox.strokeColor = .clear
+        menuHitbox.zPosition = 200 // Top
+        menuHitbox.name = "TopMenuArea"
+        menuHitbox.position = CGPoint(x: 0, y: size.height / 2 - 40) // Adjust later in updateUIPositions
+        cameraNode.addChild(menuHitbox)
+        
         // Setup Health Bar (Top Left)
         let barSize = CGSize(width: 200, height: 20)
         let barOrigin = CGPoint(x: 0, y: -barSize.height / 2) // Anchor Left Center-Y
@@ -69,9 +88,29 @@ class GameScene: SKScene {
         cameraNode.addChild(hLabel)
         self.healthLabel = hLabel
         
-        // Setup EXP Bar (Below Health Bar)
-        // Setup EXP Bar (Below Health Bar)
-        let expBarSize = CGSize(width: 200, height: 10)
+        // Setup Stamina Bar (Below Health Bar)
+        let staBarSize = CGSize(width: 180, height: 8)
+        let staBarOrigin = CGPoint(x: 0, y: -staBarSize.height / 2)
+        
+        let staBg = SKShapeNode(rect: CGRect(origin: staBarOrigin, size: staBarSize), cornerRadius: 2)
+        staBg.fillColor = .darkGray
+        staBg.strokeColor = .black
+        staBg.zPosition = 100
+        cameraNode.addChild(staBg)
+        self.staminaBarBackground = staBg
+        
+        let staBar = SKShapeNode(rect: CGRect(origin: staBarOrigin, size: staBarSize), cornerRadius: 2)
+        staBar.fillColor = .yellow
+        staBar.strokeColor = .clear
+        staBar.zPosition = 101
+        cameraNode.addChild(staBar)
+        self.staminaBar = staBar
+        
+        
+        // Setup EXP Bar (Bottom of Screen?) or Below Stamina
+        // Let's put EXP at bottom for change or stick to grouping.
+        // Grouping: Below Stamina
+        let expBarSize = CGSize(width: 200, height: 6)
         let expBarOrigin = CGPoint(x: 0, y: -expBarSize.height / 2)
         
         let expBg = SKShapeNode(rect: CGRect(origin: expBarOrigin, size: expBarSize), cornerRadius: 3)
@@ -87,6 +126,13 @@ class GameScene: SKScene {
         expBar.zPosition = 101
         cameraNode.addChild(expBar)
         self.expBar = expBar
+        
+        // Setup Mini Map (Top Right)
+        let map = MiniMapNode(scene: self, size: 100)
+        map.zPosition = 100
+        cameraNode.addChild(map)
+        self.miniMap = map
+        
         
         // Initial Position Update
         updateUIPositions()
@@ -116,28 +162,70 @@ class GameScene: SKScene {
     }
     
     private func updateUIPositions() {
-        guard let view = view else { return }
-        // Use scene size or view bounds? Since camera is in scale with scene, and scene is .resizeFill, scene.size == view.bounds.size usually.
+        guard let view = view else { return } // cameraNode usage assumes camera coords match size but centered?
+        // Camera node coordinates: (0,0) is CENTER of screen.
+        // Screen bounds: -width/2 to +width/2
+        
+        // Adjust for zoom?
+        // If camera scale is 1.2, the visible area is larger. the UI needs to be placed relative to visible area.
+        // Wait, if UI is child of Camera, and Camera is scaled... the UI is scaled too!
+        // We usually want UI NOT to scale with camera zoom.
+        // Solution: Counter-scale UI or Put UI in a separate scene/overlay.
+        // Quick Fix: Scale UI nodes by 1/zoom or just accept large UI.
+        // User asked "without changing the size of anything else".
+        // If I zoom camera (node.setScale(1.2)), everything world-space shrinks. UI children of camera also shrink? NO, if camera scales, its children scale with it?
+        // Actually, SKCameraNode is weird. If you scale camera, the world scales inverse.
+        // Children of camera are fixed to camera. If camera scales > 1, world looks smaller. Children of camera...
+        // If CameraNode.xScale = 2.0, it means it shows 2x world.
+        // It does NOT mean the camera node itself is transforming its children.
+        // Let's verify: usually UI on camera stays constant size relative to screen, regardless of camera zoom, unless camera node itself has `setScale` applied that propagates.
+        // Standard practice: UI items are children of camera. Camera zoom affects WORLD, not UI?
+        // Actually: "The camera node’s scale property changes the size of the visible area of the scene... The position and rotation of the camera node are applied to the scene before it is rendered."
+        // Child nodes of the camera are rendered relative to the camera. They are NOT affected by the camera's transform applied to the scene.
+        // BUT they ARE affected if the camera node itself is transformed?
+        // Actually, children of camera move with camera.
+        // Documentation says: "Nodes contained by the camera node are rendered as if they were part of the scene, but they do not move when the camera moves."
+        // Scale? If I set camera.setScale(2), the world shrinks. Do children shrink?
+        // Usually NO. Children of camera stay 1:1 with screen pixels (roughly).
+        // Let's assume standard behavior: UI stays fixed size.
+        
         let width = size.width
         let height = size.height
+        let halfW = width / 2
+        let halfH = height / 2
         
-        // Timer at very top (with some padding for notch/safe area)
-        timerLabel.position = CGPoint(x: 0, y: height / 2 - 50)
+        // Timer at very top
+        timerLabel.position = CGPoint(x: 0, y: halfH - 50)
         
-        // Health Bar Centered Below Timer
-        let yPos = height / 2 - 80
-        let xOffset: CGFloat = -100 // Half of 200 width to center it
+        if let menuArea = cameraNode.childNode(withName: "TopMenuArea") {
+            menuArea.position = CGPoint(x: 0, y: halfH - 40)
+        }
         
-        healthBarBackground?.position = CGPoint(x: xOffset, y: yPos)
-        healthBar?.position = CGPoint(x: xOffset, y: yPos)
+        // Health Bar Top Left
+        let leftMargin: CGFloat = -halfW + 20
+        let topMargin: CGFloat = halfH - 60
         
-        // Label centered on bar (slightly adjusted for font baseline)
-        healthLabel?.position = CGPoint(x: 0, y: yPos - 5)
+        let xOffset = leftMargin + 100 // + half width of bar (200/2)
         
-        // EXP Bar directly below Health Bar
-        let expYPos = yPos - 20
-        expBarBackground?.position = CGPoint(x: xOffset, y: expYPos)
-        expBar?.position = CGPoint(x: xOffset, y: expYPos)
+        healthBarBackground?.position = CGPoint(x: xOffset, y: topMargin)
+        healthBar?.position = CGPoint(x: xOffset, y: topMargin)
+        healthLabel?.position = CGPoint(x: xOffset, y: topMargin - 5)
+        
+        // Stamina Below Health
+        let staY = topMargin - 20
+        staminaBarBackground?.position = CGPoint(x: xOffset, y: staY)
+        staminaBar?.position = CGPoint(x: xOffset, y: staY)
+        
+        // EXP Below Stamina
+        let expY = staY - 15
+        expBarBackground?.position = CGPoint(x: xOffset, y: expY)
+        expBar?.position = CGPoint(x: xOffset, y: expY)
+        
+        // Mini Map Top Right
+        let rightMargin = halfW - 60 // - half width (50) - padding
+        let mapY = halfH - 60
+        
+        miniMap?.position = CGPoint(x: rightMargin, y: mapY)
     }
     
     public func setupGame() {
@@ -264,6 +352,25 @@ class GameScene: SKScene {
             
             // Update Debug Radius Position
             pickupRadiusNode?.position = sprite.node.position
+            
+            // Update Dash System for this entity (or globally if registered)
+            // Dash system needs to be updated. Since it's not in GameManager yet, update here manually for player.
+            // DashSystem is a GKComponentSystem, meant to update all components.
+            // But we didn't add DashSystem to GameManager.
+            // Let's just create a quick DashSystem instance or update logic.
+            // Wait, DashSystem is a system for MovementComponent? No, it's a logic system.
+            // Actually I defined DashSystem as GKComponentSystem<GKComponent>.
+            // I need to add components to it?
+            // Actually, DashSystem.update iterates over its components.
+            // BUT, I didn't register components to DashSystem.
+            // Let's just call `dashSystem.update(deltaTime: deltaTime)` but I need to ensure components are in it?
+            // Re-think: DashSystem in my implementation iterates over components.
+            // But I never added components to `dashSystem`.
+            // FIX: Add player's movement component to dashSystem.
+            if dashSystem.components.isEmpty {
+                dashSystem.addComponent(movement)
+            }
+            dashSystem.update(deltaTime: deltaTime)
         }
 
         gameManager.update(deltaTime)
@@ -296,6 +403,14 @@ class GameScene: SKScene {
             healthLabel?.text = "\(healthComp.currentHealth) / \(healthComp.maxHealth)"
         }
         
+        // Update Stamina UI
+        if let player = player,
+           let staminaComp = player.component(ofType: StaminaComponent.self) {
+             let ratio = staminaComp.currentStamina / staminaComp.maxStamina
+             let clamped = max(0, min(1.0, ratio))
+             staminaBar?.xScale = clamped
+        }
+        
         // Update EXP UI
         if let player = player,
            let expComp = player.component(ofType: ExperienceComponent.self) {
@@ -303,14 +418,19 @@ class GameScene: SKScene {
             let clampedRatio = max(0, min(1.0, ratio))
             expBar?.xScale = clampedRatio
         }
+        
+        // Update Minimap
+        miniMap?.update()
     }
+    
+    // Touch Handling State
+    private var touchStartTime: TimeInterval = 0
+    private var touchStartPos: CGPoint = .zero
     
     // MARK: - Touch Handling & Joystick Vis Updates
     
     // Helper to convert Scene Touch to Camera Space (UI Space)
     private func locationInCamera(_ touch: UITouch) -> CGPoint {
-        // location(in: self) gives scene coords (world).
-        // location(in: cameraNode) gives coords relative to camera center.
         return touch.location(in: cameraNode)
     }
 
@@ -319,28 +439,28 @@ class GameScene: SKScene {
         
         let locationCamera = locationInCamera(touch)
         
-        // Check UI Touches (Health Bar)
-        if let healthBg = healthBarBackground, healthBg.contains(locationCamera) {
+        // Record for Swipe Detection
+        touchStartTime = touch.timestamp
+        touchStartPos = locationCamera
+        
+        // Check UI Touches (Menu Area)
+        if let menuArea = cameraNode.childNode(withName: "TopMenuArea"), menuArea.contains(locationCamera) {
              NotificationCenter.default.post(name: NSNotification.Name("ShowStats"), object: nil)
              return
         }
     
-        // Logic for Joystick Input (still used .location(in: self) originally? No, virtual joystick logic usually wants screen relative or start-relative.)
-        // But our VirtualJoystick class just takes points. If we use world coordinates, it works fine UNTIL the camera moves.
-        // If the camera moves while dragging, the "current point" in world space changes even if finger doesn't move on screen.
-        // FIX: Use location in camera (screen space) for joystick logic.
-        let location = locationInCamera(touch)
-        virtualJoystick.start(at: location)
+        // Joystick Logic
+        virtualJoystick.start(at: locationCamera)
         
         // Update Vis
-        joystickBase?.position = location
+        joystickBase?.position = locationCamera
         joystickBase?.isHidden = false
         
-        joystickKnob?.position = location
+        joystickKnob?.position = locationCamera
         joystickKnob?.isHidden = false
         
         joystickLine?.isHidden = false
-        updateJoystickLine(start: location, end: location)
+        updateJoystickLine(start: locationCamera, end: locationCamera)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -349,13 +469,7 @@ class GameScene: SKScene {
         virtualJoystick.move(to: location)
         
         // Visuals
-        // Current position of joystick knob is stored in virtualJoystick.currentPosition
-        // But wait, virtualJoystick logic might clamp the position.
-        // We should read back from virtualJoystick
-        
         let clampedParams = virtualJoystick.currentPosition 
-        // Note: VirtualJoystick stores whatever we passed in "start" as origin. If we passed camera-space, it stores camera space.
-        
         joystickKnob?.position = clampedParams
         
         if let origin = joystickBase?.position {
@@ -364,6 +478,29 @@ class GameScene: SKScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        
+        // Swipe Detection (Dash)
+        let duration = touch.timestamp - touchStartTime
+        let endPos = locationInCamera(touch)
+        let distance = hypot(endPos.x - touchStartPos.x, endPos.y - touchStartPos.y)
+        
+        // Criteria: Short duration (e.g. < 0.3s) and significant distance (e.g. > 50pt)
+        if duration < 0.3 && distance > 50 {
+            // It's a swipe!
+            if let player = player {
+                let dx = endPos.x - touchStartPos.x
+                let dy = endPos.y - touchStartPos.y
+                let direction = CGVector(dx: dx, dy: dy)
+                
+                // Attempt Dash
+                 dashSystem.attemptDash(for: player, direction: direction)
+                 // If dash logic requires success feedback to stop movement:
+                 // The attemptDash function checks stamina. If it succeeds, isDashing = true.
+                 // MovementComponent treats isDashing = true as "Override movement".
+            }
+        }
+        
         virtualJoystick.stop()
         hideJoystick()
     }

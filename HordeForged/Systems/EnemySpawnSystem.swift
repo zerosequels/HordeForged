@@ -78,7 +78,9 @@ class EnemySpawnSystem: GKComponentSystem<GKComponent> {
         // Camera position
         let cameraPos = scene.camera?.position ?? .zero
         
-        let spawnRadius: CGFloat = max(scene.size.width, scene.size.height) / 2 + 100 // Just offscreen
+        // Adjust for zoom
+        let zoom = scene.camera?.xScale ?? 1.0
+        let spawnRadius: CGFloat = (max(scene.size.width, scene.size.height) / 2 + 100) * zoom // Just offscreen
         
         let randomAngle = CGFloat.random(in: 0...(2 * .pi))
         let spawnX = cameraPos.x + cos(randomAngle) * spawnRadius

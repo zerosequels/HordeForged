@@ -8,6 +8,7 @@ class SurvivorEntity: GKEntity {
     public let movementComponent: MovementComponent
     public let healthComponent: HealthComponent
     public let experienceComponent: ExperienceComponent
+    public let staminaComponent: StaminaComponent
     
     init(imageName: String) {
         // Init Components first
@@ -16,6 +17,7 @@ class SurvivorEntity: GKEntity {
         self.movementComponent = MovementComponent()
         self.healthComponent = HealthComponent(maxHealth: 50)
         self.experienceComponent = ExperienceComponent()
+        self.staminaComponent = StaminaComponent()
         
         super.init()
         
@@ -24,6 +26,7 @@ class SurvivorEntity: GKEntity {
         addComponent(movementComponent)
         addComponent(healthComponent)
         addComponent(experienceComponent)
+        addComponent(staminaComponent)
     }
     
     // For shape-based placeholder (useful if assets are missing)
@@ -32,6 +35,7 @@ class SurvivorEntity: GKEntity {
         self.movementComponent = MovementComponent()
         self.healthComponent = HealthComponent(maxHealth: 50)
         self.experienceComponent = ExperienceComponent()
+        self.staminaComponent = StaminaComponent()
         
         super.init()
         
@@ -39,6 +43,7 @@ class SurvivorEntity: GKEntity {
         addComponent(movementComponent)
         addComponent(healthComponent)
         addComponent(experienceComponent)
+        addComponent(staminaComponent)
         
         let inventory = InventoryComponent()
         // Default Ability: Auto Attack

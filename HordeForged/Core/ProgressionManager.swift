@@ -13,28 +13,10 @@ class ProgressionManager {
     
     private func setupDatabase() {
         // --- Abilities ---
-        // 1. Basic Auto Attack (Active)
-        let autoAttack = AbilityDefinition(id: "auto_attack", name: "Auto Attack", description: "Fires basic projectiles.", type: .active, rarity: .common, maxLevel: 10)
-        
-        // 2. Radial Blast (Active)
-        let radialBlast = AbilityDefinition(id: "radial_blast", name: "Radial Blast", description: "Explosion around player.", type: .active, rarity: .rare, maxLevel: 10)
-        
-        // 3. Haste (Passive)
-        let haste = AbilityDefinition(id: "haste", name: "Haste", description: "Increases movement speed.", type: .passive, rarity: .common, maxLevel: 10)
-        
-        // 4. Might (Passive)
-        let might = AbilityDefinition(id: "might", name: "Might", description: "Increases damage.", type: .passive, rarity: .common, maxLevel: 10)
-        
-        allAbilities = [autoAttack, radialBlast, haste, might]
+        allAbilities = [AutoAttack, RadialBlast, Haste, Might]
         
         // --- Items ---
-        let syringe = ItemDefinition(id: "syringe", name: "Syringe", description: "+15% Attack Speed", rarity: .common, modifiers: [StatModifier(type: .attackSpeed, value: 0.15, isMultiplier: false)])
-        
-        let goatHoof = ItemDefinition(id: "goat_hoof", name: "Goat Hoof", description: "+10% Move Speed", rarity: .common, modifiers: [StatModifier(type: .movementSpeed, value: 0.10, isMultiplier: false)])
-        
-        let lens = ItemDefinition(id: "lens", name: "Lens", description: "+5% Damage", rarity: .common, modifiers: [StatModifier(type: .damage, value: 0.05, isMultiplier: false)])
-        
-        allItems = [syringe, goatHoof, lens]
+        allItems = [Syringe, GoatHoof, Lens]
     }
     
     func getUpgradeOptions(for inventory: InventoryComponent) -> [AbilityDefinition] {
