@@ -3,28 +3,49 @@ import SpriteKit
 
 class SurvivorEntity: GKEntity {
     
+    // Exposed for easy access (and testing)
+    public let spriteComponent: SpriteComponent
+    public let movementComponent: MovementComponent
+    public let healthComponent: HealthComponent
+    public let experienceComponent: ExperienceComponent
+    
     init(imageName: String) {
+        // Init Components first
+        let texture = SKTexture(imageNamed: imageName)
+        self.spriteComponent = SpriteComponent(texture: texture)
+        self.movementComponent = MovementComponent()
+        self.healthComponent = HealthComponent(maxHealth: 50)
+        self.experienceComponent = ExperienceComponent()
+        
         super.init()
         
-        // Visual component
-        let texture = SKTexture(imageNamed: imageName)
-        let spriteComponent = SpriteComponent(texture: texture)
+        // Add to entity
         addComponent(spriteComponent)
-        
-        // Logic component
-        let movementComponent = MovementComponent()
         addComponent(movementComponent)
+        addComponent(healthComponent)
+        addComponent(experienceComponent)
     }
     
     // For shape-based placeholder (useful if assets are missing)
     init(color: SKColor, size: CGSize) {
+        self.spriteComponent = SpriteComponent(color: color, size: size)
+        self.movementComponent = MovementComponent()
+        self.healthComponent = HealthComponent(maxHealth: 50)
+        self.experienceComponent = ExperienceComponent()
+        
         super.init()
         
-        let spriteComponent = SpriteComponent(color: color, size: size)
         addComponent(spriteComponent)
-        
-        let movementComponent = MovementComponent()
         addComponent(movementComponent)
+        addComponent(healthComponent)
+        addComponent(experienceComponent)
+        
+        let inventory = InventoryComponent()
+        // Default Ability: Auto Attack
+        if let autoAttack = ProgressionManager.shared.allAbilities.first(where: { $0.id == "auto_attack" }) {
+            inventory.addAbility(autoAttack)
+        }
+        addComponent(inventory)
     }
     
     required init?(coder: NSCoder) {

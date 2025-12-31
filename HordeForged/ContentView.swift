@@ -20,14 +20,6 @@ struct MainGameView: View {
         ZStack {
             GameViewRepresentable() // The SKView content will go here
                 .ignoresSafeArea()
-
-            VStack {
-                PlayerInfoView()
-                
-                Spacer()
-                
-                ActionBarView()
-            }
         }
     }
 }

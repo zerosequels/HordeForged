@@ -4,6 +4,11 @@ import SpriteKit
 class SpriteComponent: GKComponent {
     let node: SKNode
     
+    init(node: SKNode) {
+        self.node = node
+        super.init()
+    }
+
     init(texture: SKTexture) {
         self.node = SKSpriteNode(texture: texture)
         super.init()
