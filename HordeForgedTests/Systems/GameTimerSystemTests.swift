@@ -1,5 +1,6 @@
 import XCTest
 import SpriteKit
+internal import GameplayKit
 @testable import HordeForged
 
 class GameTimerSystemTests: XCTestCase {
@@ -27,20 +28,20 @@ class GameTimerSystemTests: XCTestCase {
         XCTAssertEqual(timerSystem.timeRemaining, 59.0)
     }
     
-    func testGameOverCondition() {
+    func testTimerExpiration() {
         // Fast forward
         timerSystem.timeRemaining = 0.5
         
-        var victoryTriggered = false
-        timerSystem.onGameEnd = { isVictory in
-            victoryTriggered = isVictory
+        var expiredTriggered = false
+        timerSystem.onTimerExpired = {
+            expiredTriggered = true
         }
         
         timerSystem.update(deltaTime: 1.0)
         
-        XCTAssertTrue(timerSystem.isGameOver)
-        XCTAssertTrue(victoryTriggered) // Time running out = Victory in this game
+        XCTAssertTrue(expiredTriggered, "Timer expiration should trigger callback")
         XCTAssertLessThanOrEqual(timerSystem.timeRemaining, 0)
+        XCTAssertFalse(timerSystem.isGameOver, "Timer expiration should NOT automatically end game (Hard Mode trigger)")
     }
     
     func testStopUpdatingAfterGameOver() {

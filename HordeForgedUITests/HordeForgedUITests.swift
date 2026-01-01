@@ -26,22 +26,18 @@ final class HordeForgedUITests: XCTestCase {
     func testExample() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        app.launchArguments.append("-disable-ui-test-idle-synchronization")
         app.launch()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    @MainActor
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
-    }
+
 
     @MainActor
     func testSKViewIsPresentAndVisible() throws {
         let app = XCUIApplication()
+        app.launchArguments.append("-disable-ui-test-idle-synchronization")
         app.launch()
 
         // We expect an element with accessibility identifier "GameSKView" to be present

@@ -14,10 +14,11 @@ public class GameManager {
         // So YES, MovementComponent MUST be updated.
         // Standard 'movementSystem' here does that.
         // EnemyEntity has MovementComponent, so it will be added to this if we check for it.
-        return [movementSystem]
+        return [movementSystem, self.dashSystem]
     }()
     
     var fireProjectileSystem: FireProjectileSystem!
+    var dashSystem: DashSystem!
     var collisionSystem: CollisionSystem!
     var playerExperienceSystem: PlayerExperienceSystem!
     var gameTimerSystem: GameTimerSystem!
@@ -36,9 +37,23 @@ public class GameManager {
     init(scene: SKScene) {
         self.scene = scene
         self.fireProjectileSystem = FireProjectileSystem(scene: scene)
+        self.dashSystem = DashSystem()
         self.collisionSystem = CollisionSystem(scene: scene)
         self.playerExperienceSystem = PlayerExperienceSystem(scene: scene)
-        self.gameTimerSystem = GameTimerSystem()
+        self.playerExperienceSystem = PlayerExperienceSystem(scene: scene)
+        
+        // Check for timer override
+        var timerDuration: TimeInterval?
+        if let override = UserDefaults.standard.object(forKey: "overrideGameDuration") {
+            if let doubleVal = override as? Double {
+                timerDuration = doubleVal
+            } else if let stringVal = override as? String, let doubleVal = Double(stringVal) {
+                timerDuration = doubleVal
+            }
+        }
+        self.gameTimerSystem = GameTimerSystem(duration: timerDuration)
+        
+        self.enemyMovementSystem = EnemyMovementSystem(scene: scene)
         self.enemyMovementSystem = EnemyMovementSystem(scene: scene)
         self.mapSystem = MapSystem(scene: scene)
         self.indicatorSystem = IndicatorSystem(scene: scene)
@@ -93,6 +108,38 @@ public class GameManager {
         indicatorSystem.addComponent(foundIn: entity)
         interactionSystem.addComponent(foundIn: entity)
         // InteractableSpawnSystem doesn't need component tracking, it just spawns.
+    }
+    
+    func applyDamage(target: GKEntity, amount: Int) {
+        guard let healthComp = target.component(ofType: HealthComponent.self) else { return }
+        
+        // Apply Damage
+        healthComp.currentHealth -= amount
+        
+        // Show Visual Feedback
+        if let spriteComp = target.component(ofType: SpriteComponent.self),
+           let gameScene = scene as? GameScene {
+            gameScene.showDamage(amount: amount, position: spriteComp.node.position)
+        }
+        
+        // Check for Death
+        if healthComp.currentHealth <= 0 {
+            handleEnemyDeath(target)
+        }
+    }
+
+    func handleEnemyDeath(_ enemy: GKEntity) {
+        // Ensure entity is still valid to prevent double-death logic
+        guard entities.contains(enemy) else { return }
+        
+        // Spawn XP Orb
+        if let spriteComponent = enemy.component(ofType: SpriteComponent.self) {
+            let orb = ExpOrbEntity(value: 5, position: spriteComponent.node.position)
+            add(orb)
+        }
+        
+        // Remove from Game
+        remove(enemy)
     }
     
     func remove(_ entity: GKEntity) {
@@ -239,7 +286,17 @@ public class GameManager {
         }
         
         // Reset Systems
-        gameTimerSystem = GameTimerSystem()
+        // Check for timer override again
+        var timerDuration: TimeInterval?
+        if let override = UserDefaults.standard.object(forKey: "overrideGameDuration") {
+            if let doubleVal = override as? Double {
+                timerDuration = doubleVal
+            } else if let stringVal = override as? String, let doubleVal = Double(stringVal) {
+                timerDuration = doubleVal
+            }
+        }
+        gameTimerSystem = GameTimerSystem(duration: timerDuration)
+        
         activeBoss = nil
         
         // Ask Scene to respawn Player

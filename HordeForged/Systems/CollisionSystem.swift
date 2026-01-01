@@ -33,21 +33,12 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                       let healthComp = enemy.component(ofType: HealthComponent.self) else { continue }
                 
                 if projSprite.node.frame.intersects(enemySprite.node.frame) {
-                    // Apply Damage
-                    healthComp.currentHealth -= damageComp.damageAmount
-                    
-                    // Show Damage Text
-                    gameScene.showDamage(amount: damageComp.damageAmount, position: enemySprite.node.position)
+                    // Apply Damage via Manager (Handles visuals + death)
+                    gameScene.gameManager.applyDamage(target: enemy, amount: damageComp.damageAmount)
                     
                     // Remove Projectile
                     gameScene.gameManager.remove(projectile)
                     
-                    // Check Enemy Death
-                    if healthComp.currentHealth <= 0 {
-                        let orb = ExpOrbEntity(value: 5, position: enemySprite.node.position)
-                        gameScene.gameManager.add(orb)
-                        gameScene.gameManager.remove(enemy)
-                    }
                     break
                 }
             }

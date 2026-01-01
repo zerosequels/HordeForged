@@ -87,7 +87,7 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
                     let healthCheck = enemy.component(ofType: HealthComponent.self) {
                      let dist = hypot(enemySprite.node.position.x - position.x, enemySprite.node.position.y - position.y)
                      if dist < 150 { // Range
-                         healthCheck.currentHealth -= Int(damage)
+                         gameScene.gameManager.applyDamage(target: enemy, amount: Int(damage))
                          // Optional: Knockback?
                      }
                  }

@@ -35,7 +35,7 @@ class GameScene: SKScene {
     private var miniMap: MiniMapNode?
     
     // Dash System
-    private let dashSystem = DashSystem()
+
     
     private var lastUpdateTime: TimeInterval = 0
 
@@ -336,27 +336,9 @@ class GameScene: SKScene {
             movement.velocity = virtualJoystick.velocity
             
             
+            
             // Update Debug Radius Position
             pickupRadiusNode?.position = sprite.node.position
-            
-            // Update Dash System for this entity (or globally if registered)
-            // Dash system needs to be updated. Since it's not in GameManager yet, update here manually for player.
-            // DashSystem is a GKComponentSystem, meant to update all components.
-            // But we didn't add DashSystem to GameManager.
-            // Let's just create a quick DashSystem instance or update logic.
-            // Wait, DashSystem is a system for MovementComponent? No, it's a logic system.
-            // Actually I defined DashSystem as GKComponentSystem<GKComponent>.
-            // I need to add components to it?
-            // Actually, DashSystem.update iterates over its components.
-            // BUT, I didn't register components to DashSystem.
-            // Let's just call `dashSystem.update(deltaTime: deltaTime)` but I need to ensure components are in it?
-            // Re-think: DashSystem in my implementation iterates over components.
-            // But I never added components to `dashSystem`.
-            // FIX: Add player's movement component to dashSystem.
-            if dashSystem.components.isEmpty {
-                dashSystem.addComponent(movement)
-            }
-            dashSystem.update(deltaTime: deltaTime)
         }
 
         gameManager.update(deltaTime)
@@ -494,7 +476,7 @@ class GameScene: SKScene {
                 let direction = CGVector(dx: dx, dy: dy)
                 
                 // Attempt Dash
-                 dashSystem.attemptDash(for: player, direction: direction)
+                 gameManager.dashSystem.attemptDash(for: player, direction: direction)
                  // If dash logic requires success feedback to stop movement:
                  // The attemptDash function checks stamina. If it succeeds, isDashing = true.
                  // MovementComponent treats isDashing = true as "Override movement".
