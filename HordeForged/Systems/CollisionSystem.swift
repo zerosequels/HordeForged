@@ -200,7 +200,7 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                  else if chargeComp.state == .portalOpen {
                      // Portal Entry
                      if dist < 40 {
-                         gameScene.gameManager.restartLevel()
+                         LevelManager.shared.nextLevel()
                      }
                  }
             } else {
