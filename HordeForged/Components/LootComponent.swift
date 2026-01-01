@@ -4,6 +4,7 @@ enum LootType {
     case expOrb
     case healthPotion
     case item(String) // ID of the ItemDefinition
+    case randomItem
 }
 
 struct LootItem {

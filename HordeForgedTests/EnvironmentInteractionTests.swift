@@ -34,6 +34,25 @@ class EnvironmentInteractionTests: XCTestCase {
         XCTAssertEqual(loot.first?.value, 50)
     }
     
+    func testRandomLootDrop() {
+        // Setup Collision System (access via scene or create new)
+        let collisionSystem = CollisionSystem(scene: scene)
+        
+        // Create loot component with random item
+        let loot = [LootItem(type: .randomItem, value: 3, chance: 1.0)]
+        let lootComp = LootComponent(lootTable: loot)
+        
+        // Trigger spawn
+        collisionSystem.spawnLoot(from: lootComp, position: .zero, gameScene: scene)
+        
+        // Assert
+        // Should have added an ItemPickupEntity
+        let pickup = gameManager.entities.first { $0 is ItemPickupEntity } as? ItemPickupEntity
+        XCTAssertNotNil(pickup)
+        XCTAssertEqual(pickup?.count, 3)
+        XCTAssertFalse(pickup?.itemID.isEmpty ?? true)
+    }
+    
     func testHazardSlowEffect() {
         let player = SurvivorEntity(color: .blue, size: CGSize(width: 40, height: 40))
         gameManager.add(player)

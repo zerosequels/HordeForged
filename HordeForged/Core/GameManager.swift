@@ -22,6 +22,10 @@ public class GameManager {
     var playerExperienceSystem: PlayerExperienceSystem!
     var gameTimerSystem: GameTimerSystem!
     var enemyMovementSystem: EnemyMovementSystem!
+    var mapSystem: MapSystem!
+    var indicatorSystem: IndicatorSystem!
+    var interactionSystem: InteractionSystem!
+    var interactableSpawnSystem: InteractableSpawnSystem!
     
     lazy var enemySpawnSystem: EnemySpawnSystem = {
         return EnemySpawnSystem(scene: self.scene!, gameManager: self)
@@ -36,10 +40,23 @@ public class GameManager {
         self.playerExperienceSystem = PlayerExperienceSystem(scene: scene)
         self.gameTimerSystem = GameTimerSystem()
         self.enemyMovementSystem = EnemyMovementSystem(scene: scene)
+        self.mapSystem = MapSystem(scene: scene)
+        self.indicatorSystem = IndicatorSystem(scene: scene)
+        self.interactionSystem = InteractionSystem()
+        self.interactionSystem.scene = scene
+        self.interactableSpawnSystem = InteractableSpawnSystem(scene: scene, gameManager: self)
         
-        self.gameTimerSystem = GameTimerSystem()
-        self.enemyMovementSystem = EnemyMovementSystem(scene: scene)
+        NotificationCenter.default.addObserver(self, selector: #selector(onStageChanged), name: NSNotification.Name("StageChanged"), object: nil)
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func onStageChanged() {
+        restartLevel()
+    }
+    // ... (add method remains mostly same, need to add to system via update)
     
     func add(_ entity: GKEntity) {
         entities.insert(entity)
@@ -52,9 +69,11 @@ public class GameManager {
             system.addComponent(foundIn: entity)
         }
         
-        // Track Player for Fire System
+        // Track Player for Fire System & Other Systems
         if entity is SurvivorEntity {
             fireProjectileSystem.playerEntity = entity
+            indicatorSystem.playerEntity = entity
+            interactionSystem.playerEntity = entity
         }
         
         // Add to Experience System
@@ -69,6 +88,11 @@ public class GameManager {
         if entity is EnemyEntity {
             enemyMovementSystem.addComponent(foundIn: entity)
         }
+        
+        // Add to new systems
+        indicatorSystem.addComponent(foundIn: entity)
+        interactionSystem.addComponent(foundIn: entity)
+        // InteractableSpawnSystem doesn't need component tracking, it just spawns.
     }
     
     func remove(_ entity: GKEntity) {
@@ -83,6 +107,8 @@ public class GameManager {
         }
         
         enemyMovementSystem.removeComponent(foundIn: entity)
+        indicatorSystem.removeComponent(foundIn: entity)
+        interactionSystem.removeComponent(foundIn: entity)
     }
     
     func update(_ deltaTime: TimeInterval) {
@@ -97,10 +123,23 @@ public class GameManager {
         
         // check for defeat
         checkDefeat()
+        checkBossStatus()
         
         // Enemy Systems
         enemyMovementSystem.update(deltaTime: deltaTime)
         enemySpawnSystem.update(deltaTime: deltaTime)
+        
+        // Map System
+        mapSystem.update(deltaTime: deltaTime)
+        
+        // Indicator System
+        indicatorSystem.update(deltaTime: deltaTime)
+        
+        // Interaction System
+        interactionSystem.update(deltaTime: deltaTime)
+        
+        // Interactables
+        interactableSpawnSystem.update(deltaTime: deltaTime)
     }
     
     func checkDefeat() {
@@ -116,49 +155,99 @@ public class GameManager {
             }
         }
     }
+    
+    func checkBossStatus() {
+        // If boss was active but is now gone/dead
+        if let boss = activeBoss {
+            // Check if removed or dead
+            if !entities.contains(boss) || (boss.component(ofType: HealthComponent.self)?.currentHealth ?? 0) <= 0 {
+                print("Boss Defeated! Enabling Crucible Core...")
+                activeBoss = nil
+                
+                // Find Core and Enable Interaction
+                if let core = entities.first(where: { $0 is CrucibleCoreEntity }),
+                   let interact = core.component(ofType: InteractionComponent.self) {
+                    interact.isInteractable = true
+                    // Visual feedback?
+                }
+            }
+        }
+    }
 
     
-    // MARK: - Boss Event
+    // MARK: - Boss & Level Event
     var activeBoss: GKEntity?
     
     func spawnBoss(at position: CGPoint) {
         guard activeBoss == nil else { return }
         
+        // Use Stage Config for boss type?
         let boss = EnemyEntity(color: .purple, size: CGSize(width: 80, height: 80), health: 500) // Beefy
         boss.component(ofType: SpriteComponent.self)?.node.position = position
         
-        // Slightly slower code reused? or just use same components
         if let move = boss.component(ofType: MovementComponent.self) {
-            move.movementSpeed = 80 // Slower
+            move.movementSpeed = 80
         }
-        
-        // Add a tag or just use reference?
-        // Let's add it normally. CollisionSystem logic for projectiles treats it as EnemyEntity.
         
         add(boss)
         activeBoss = boss
         print("Boss Spawned!")
     }
     
+    func spawnCrucibleCore() {
+        // Spawn far away from player
+        // Player is usually at 0,0 locally, but world position moves?
+        // Actually Camera moves. Player uses Joystick logic.
+        // Assuming Player starts at 0,0 or keeps updating position.
+        
+        var startPos: CGPoint = .zero
+        if let player = entities.first(where: { $0 is SurvivorEntity }),
+           let sprite = player.component(ofType: SpriteComponent.self) {
+            startPos = sprite.node.position
+        }
+        
+        // Fixed distance 3000
+        let type = LevelManager.shared.currentLevelIndex
+        // Maybe vary angle by level?
+        let angle = Double(type) * 0.5 // Randomish direction change
+        let dist: CGFloat = 3000
+        
+        let x = startPos.x + cos(angle) * dist
+        let y = startPos.y + sin(angle) * dist
+        
+        let core = CrucibleCoreEntity(position: CGPoint(x: x, y: y), chargeTime: 5.0)
+        add(core)
+        print("Crucible Core Spawned at \(x), \(y)")
+    }
+    
+    func setupLevel() {
+         // Called after reset or init
+         spawnCrucibleCore()
+         
+         // Setup Stage Config specific things?
+         // MapSystem handles tiles automatically via Notification.
+    }
+    
     func restartLevel() {
         print("Restarting Level...")
         
-        // Simple restart: Remove all entities, re-setup.
-        // Or tell Scene to restart.
-        // Scene.setupGame handles "setup", but we need to clear first.
-        
-        // Remove All
-        let allEntities = entities // snapshot
+        // Remove All Entities except Player? Or respawn player?
+        // Usually full reset.
+        let allEntities = entities
         for entity in allEntities {
              remove(entity)
         }
         
-        // Reset Systems?
+        // Reset Systems
         gameTimerSystem = GameTimerSystem()
+        activeBoss = nil
         
-        // Call setup on scene
+        // Ask Scene to respawn Player
         if let gameScene = scene as? GameScene {
-             gameScene.setupGame()
+             gameScene.setupGame() // This respawns player and test entities
         }
+        
+        // Prepare new level elements
+        setupLevel()
     }
 }

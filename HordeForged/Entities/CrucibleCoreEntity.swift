@@ -57,8 +57,20 @@ class CrucibleCoreEntity: GKEntity {
         let chargeComponent = ChargeComponent(maxCharge: chargeTime)
         addComponent(chargeComponent)
         
-        // Add a health component so it can be targeted by enemies? 
-        // For now, let's keep it simple: Charging event only (defend zone).
+        // Interaction Logic
+        let interactionComp = InteractionComponent(radius: 60)
+        interactionComp.onInteract = {
+             // Logic will be handled via closure assignment in GameManager or Scene?
+             // Or assign a default here that calls LevelManager?
+             // LevelManager is a singleton, so we can call it.
+             print("Interacting with Crucible Core!")
+             LevelManager.shared.nextLevel()
+        }
+        interactionComp.isInteractable = false // Start disabled, enable after boss death
+        addComponent(interactionComp)
+        
+        // Navigation Indicator
+        addComponent(IndicatorComponent())
     }
     
     required init?(coder: NSCoder) {

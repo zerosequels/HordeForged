@@ -278,20 +278,8 @@ class GameScene: SKScene {
         enemy3.component(ofType: SpriteComponent.self)?.node.position = CGPoint(x: 0, y: 200)
         gameManager.add(enemy3)
         
-        // --- New Features Test ---
-        
-        // 1. Crucible Core
-        let core = CrucibleCoreEntity(position: CGPoint(x: -200, y: 0), chargeTime: 3.0)
-        gameManager.add(core)
-        
-        // 2. Hazard (Goo Pool)
-        let goo = HazardEntity(position: CGPoint(x: 100, y: 100), type: .slow, value: 0.2, radius: 40) // 0.2x speed
-        gameManager.add(goo)
-        
-        // 3. Destructible (Pot)
-        let loot = [LootItem(type: .item(ElixirOfAlacrity.id), value: 1, chance: 1.0)]
-        let pot = DestructibleEntity(position: CGPoint(x: 100, y: -100), lootTable: loot)
-        gameManager.add(pot)
+        // Setup initial level elements (Core, Interactables)
+        gameManager.setupLevel()
     }
 
     private func setupJoystickNodes() {
@@ -451,6 +439,20 @@ class GameScene: SKScene {
     
         // Joystick Logic
         virtualJoystick.start(at: locationCamera)
+        
+        // Try Interaction (World Space)
+        // Camera node children are UI/Overlay. The game world is the scene.
+        // Touches are in camera node space? `locationInCamera`
+        // We need World Space for entities.
+        // scene.camera?.position logic needed.
+        let cameraIdx = cameraNode.position
+        let worldX = cameraIdx.x + locationCamera.x / cameraNode.xScale // Rough approximation if camera is centered
+        // Actually, scene.convert(point: from:) is better.
+        let locationScene = self.convert(touch.location(in: self), to: self) // location in scene
+        // Wait, touches are in view? touches.location(in: self) gives scene coords.
+        
+        let touchSceneParams = touch.location(in: self)
+        gameManager.interactionSystem.tryInteract(at: touchSceneParams)
         
         // Update Vis
         joystickBase?.position = locationCamera

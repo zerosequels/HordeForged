@@ -3,7 +3,7 @@ import SpriteKit
 
 class CollisionSystem: GKComponentSystem<GKComponent> {
     
-    let scene: SKScene
+    weak var scene: SKScene?
     private var lastDamageTime: TimeInterval = 0
     private let damageCooldown: TimeInterval = 0.5 // 0.5s invulnerability
     
@@ -292,6 +292,11 @@ extension CollisionSystem {
                      let pickup = ItemPickupEntity(itemID: itemID, count: item.value, position: position)
                      gameScene.gameManager.add(pickup)
                     
+                case .randomItem:
+                    let itemDef = ProgressionManager.shared.getRandomItem()
+                    let pickup = ItemPickupEntity(itemID: itemDef.id, count: item.value, position: position)
+                    gameScene.gameManager.add(pickup)
+
                 case .healthPotion:
                     // TODO: Implement Potion
                     break
