@@ -1,8 +1,8 @@
 import Foundation
 
-let GoatHoof = ItemDefinition(
-    id: "goat_hoof",
-    name: "Goat Hoof",
+let ZephyrEssence = ItemDefinition(
+    id: "zephyr_essence",
+    name: "Zephyr Essence",
     description: "+10% Move Speed",
     rarity: .common,
     modifiers: [

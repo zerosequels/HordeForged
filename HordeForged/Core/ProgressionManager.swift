@@ -13,10 +13,10 @@ class ProgressionManager {
     
     private func setupDatabase() {
         // --- Abilities ---
-        allAbilities = [AutoAttack, RadialBlast, Haste, Might]
+        allAbilities = [ArcaneBolt, Thunderclap, Celerity, GiantsStrength]
         
         // --- Items ---
-        allItems = [Syringe, GoatHoof, Lens]
+        allItems = [ElixirOfAlacrity, ZephyrEssence, DragonsEye]
     }
     
     func getUpgradeOptions(for inventory: InventoryComponent) -> [AbilityDefinition] {

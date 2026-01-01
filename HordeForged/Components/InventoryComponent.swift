@@ -82,20 +82,37 @@ class InventoryComponent: GKComponent {
         
         for (item, count) in items {
             let stackCount = Double(count)
-            for mod in item.modifiers {
-                switch mod.type {
-                case .attackSpeed:
-                    attackSpeedMultiplier += mod.value * stackCount
-                case .movementSpeed:
-                    movementSpeedMultiplier += mod.value * stackCount
-                case .damage:
-                    damageMultiplier += mod.value * stackCount
-                default:
-                    break
-                }
+            applyModifiers(item.modifiers, stackCount: stackCount)
+        }
+        
+        // Add Passive Abilities
+        for ability in passiveAbilities {
+            // Stack count = level? Or just 1 set of modifiers?
+            // Usually leveling up increases the modifier value in the definition, or we scale it.
+            // For MVP, definitions are static per level instance, but here definitions are shared.
+            // If ability scales with level, the Definition should handle it or we use a formula.
+            // Current assumption: Definition has base modifier. Level scaling isn't implemented in modifiers yet.
+            // Let's assume 1 stack per level.
+            let stackCount = Double(ability.level)
+            applyModifiers(ability.definition.modifiers, stackCount: stackCount)
+        }
+        
+        print("Stats Updated: AtkSpd \(attackSpeedMultiplier), MoveSpd \(movementSpeedMultiplier), Dmg \(damageMultiplier)")
+    }
+    
+    private func applyModifiers(_ modifiers: [StatModifier], stackCount: Double) {
+        for mod in modifiers {
+            switch mod.type {
+            case .attackSpeed:
+                attackSpeedMultiplier += mod.value * stackCount
+            case .movementSpeed:
+                movementSpeedMultiplier += mod.value * stackCount
+            case .damage:
+                damageMultiplier += mod.value * stackCount
+            default:
+                break
             }
         }
-        print("Stats Updated: AtkSpd \(attackSpeedMultiplier), MoveSpd \(movementSpeedMultiplier), Dmg \(damageMultiplier)")
     }
     
     // MARK: - Update

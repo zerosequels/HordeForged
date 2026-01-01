@@ -231,7 +231,7 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                           let dropPos = bossSprite.node.position
                           
                           // Drop a Lens!
-                          let pickup = ItemPickupEntity(itemID: "lens", count: 1, position: dropPos)
+                          let pickup = ItemPickupEntity(itemID: DragonsEye.id, count: 1, position: dropPos)
                           gameScene.gameManager.add(pickup)
                           
                           // And lots of XP

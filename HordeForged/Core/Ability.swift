@@ -18,9 +18,20 @@ struct AbilityDefinition: Hashable {
     let type: AbilityType
     let rarity: AbilityRarity
     let maxLevel: Int
+    let modifiers: [StatModifier] // New: For Passive Skills
     
     // Base stats or logic identifier could go here
     // For MVP, we might hardcode logic based on ID
+    
+    init(id: String, name: String, description: String, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.type = type
+        self.rarity = rarity
+        self.maxLevel = maxLevel
+        self.modifiers = modifiers
+    }
 }
 
 class AbilityInstance {

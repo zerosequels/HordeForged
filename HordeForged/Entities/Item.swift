@@ -6,7 +6,7 @@ enum ItemRarity {
     case legendary
 }
 
-enum StatType {
+enum StatType: Hashable {
     case attackSpeed
     case movementSpeed
     case damage
@@ -14,7 +14,7 @@ enum StatType {
     case critChance
 }
 
-struct StatModifier {
+struct StatModifier: Hashable {
     let type: StatType
     let value: Double // e.g. 0.1 for +10%
     let isMultiplier: Bool // true for multiplier (base * (1+val)), false for additive flat? Usually stack items are additive %

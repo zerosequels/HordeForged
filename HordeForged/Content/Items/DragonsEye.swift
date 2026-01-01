@@ -1,8 +1,8 @@
 import Foundation
 
-let Lens = ItemDefinition(
-    id: "lens",
-    name: "Lens",
+let DragonsEye = ItemDefinition(
+    id: "dragons_eye",
+    name: "Dragon's Eye",
     description: "+5% Damage",
     rarity: .common,
     modifiers: [

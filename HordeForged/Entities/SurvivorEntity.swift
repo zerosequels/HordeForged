@@ -46,10 +46,8 @@ class SurvivorEntity: GKEntity {
         addComponent(staminaComponent)
         
         let inventory = InventoryComponent()
-        // Default Ability: Auto Attack
-        if let autoAttack = ProgressionManager.shared.allAbilities.first(where: { $0.id == "auto_attack" }) {
-            inventory.addAbility(autoAttack)
-        }
+        // Default Ability: Arcane Bolt
+        inventory.addAbility(ArcaneBolt)
         addComponent(inventory)
     }
     

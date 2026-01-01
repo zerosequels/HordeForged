@@ -289,7 +289,7 @@ class GameScene: SKScene {
         gameManager.add(goo)
         
         // 3. Destructible (Pot)
-        let loot = [LootItem(type: .item("syringe"), value: 1, chance: 1.0)]
+        let loot = [LootItem(type: .item(ElixirOfAlacrity.id), value: 1, chance: 1.0)]
         let pot = DestructibleEntity(position: CGPoint(x: 100, y: -100), lootTable: loot)
         gameManager.add(pot)
     }

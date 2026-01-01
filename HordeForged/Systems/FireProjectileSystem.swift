@@ -25,7 +25,10 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         }
         
         // Update Inventory (updates cooldowns)
-        inventory.update(deltaTime: seconds)
+        // Apply Attack Speed to Cooldowns
+        // Higher multiplier = faster time = shorter cooldown
+        let cooldownSpeed = inventory.attackSpeedMultiplier
+        inventory.update(deltaTime: seconds * cooldownSpeed)
         
         // Check for Activations
         for ability in inventory.activeAbilities {
@@ -50,10 +53,10 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         }
         
         switch ability.definition.id {
-        case "auto_attack":
+        case "arcane_bolt":
             fireProjectile(from: source, damage: 10 * damageMult)
             
-        case "radial_blast":
+        case "thunderclap":
             triggerRadialBlast(at: position, damage: 20 * damageMult)
             
         default:
