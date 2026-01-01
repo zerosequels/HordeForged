@@ -532,4 +532,32 @@ class GameScene: SKScene {
             cameraNode.position = sprite.node.position
         }
     }
+    
+    func showDamage(amount: Int, position: CGPoint) {
+        let label = SKLabelNode(fontNamed: "Arial-BoldMT")
+        label.text = "\(amount)"
+        label.fontSize = 20
+        label.fontColor = .white
+        label.position = position
+        label.zPosition = 1000 // Very top
+        
+        // Add shadow for better visibility
+        let shadow = SKLabelNode(fontNamed: "Arial-BoldMT")
+        shadow.text = "\(amount)"
+        shadow.fontSize = 20
+        shadow.fontColor = .black
+        shadow.position = CGPoint(x: 1, y: -1)
+        shadow.zPosition = -1
+        label.addChild(shadow)
+        
+        addChild(label)
+        
+        // Animate
+        let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.8)
+        let fadeOut = SKAction.fadeOut(withDuration: 0.8)
+        let group = SKAction.group([moveUp, fadeOut])
+        let remove = SKAction.removeFromParent()
+        
+        label.run(SKAction.sequence([group, remove]))
+    }
 }

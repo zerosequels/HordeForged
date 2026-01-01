@@ -36,6 +36,9 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                     // Apply Damage
                     healthComp.currentHealth -= damageComp.damageAmount
                     
+                    // Show Damage Text
+                    gameScene.showDamage(amount: damageComp.damageAmount, position: enemySprite.node.position)
+                    
                     // Remove Projectile
                     gameScene.gameManager.remove(projectile)
                     

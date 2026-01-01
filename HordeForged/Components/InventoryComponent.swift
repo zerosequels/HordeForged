@@ -64,6 +64,7 @@ class InventoryComponent: GKComponent {
                 print("Inventory Full! Cannot add \(definition.name)")
             }
         }
+        recalculateStats()
     }
     
     // MARK: - Items

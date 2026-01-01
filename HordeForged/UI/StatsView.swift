@@ -64,7 +64,17 @@ struct StatsView: View {
                         sectionHeader(title: "Passive Abilities")
                         ForEach(passiveAbilities, id: \.definition.id) { ability in
                             HStack {
-                                Text(ability.definition.name)
+                                VStack(alignment: .leading) {
+                                    Text(ability.definition.name)
+                                    if let mod = ability.definition.modifiers.first {
+                                        // Calculate bonus: Value * Level * 100
+                                        let val = mod.value * Double(ability.level) * 100
+                                        let typeName = mod.type == .movementSpeed ? "Move Speed" : (mod.type == .damage ? "Damage" : "Stat")
+                                        Text("+\(String(format: "%.0f", val))% \(typeName)")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
                                 Spacer()
                                 Text("Level \(ability.level)")
                             }
