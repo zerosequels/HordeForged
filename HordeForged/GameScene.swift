@@ -335,8 +335,6 @@ class GameScene: SKScene {
            let sprite = player.component(ofType: SpriteComponent.self) {
             movement.velocity = virtualJoystick.velocity
             
-            // Camera Follow
-            cameraNode.position = sprite.node.position
             
             // Update Debug Radius Position
             pickupRadiusNode?.position = sprite.node.position
@@ -523,5 +521,15 @@ class GameScene: SKScene {
         path.move(to: start)
         path.addLine(to: end)
         joystickLine?.path = path
+    }
+    
+    override func didFinishUpdate() {
+        super.didFinishUpdate()
+        
+        // Update Camera Position after physics and movement
+        if let player = player,
+           let sprite = player.component(ofType: SpriteComponent.self) {
+            cameraNode.position = sprite.node.position
+        }
     }
 }

@@ -6,7 +6,7 @@ class MapSystem: GKComponentSystem<GKComponent> {
     let scene: SKScene
     private var tileNodes: [String: SKShapeNode] = [:]
     private let tileSize: CGFloat = 1000 // Large tiles
-    private let bufferSize: Int = 1 // How many extra tiles around viewport
+    private let bufferSize: Int = 2 // How many extra tiles around viewport
     
     private var tileContainer: SKNode
     
