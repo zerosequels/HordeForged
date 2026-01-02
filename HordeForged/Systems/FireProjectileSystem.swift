@@ -54,10 +54,16 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         
         switch ability.definition.id {
         case "arcane_bolt":
-            fireProjectile(from: source, damage: 10 * damageMult)
+            // Base 10 + 5 per level
+            // Level 1 = 15, Level 10 = 60
+            let baseDamage = 10.0 + (Double(ability.level) * 5.0)
+            fireProjectile(from: source, damage: baseDamage * damageMult)
             
         case "thunderclap":
-            triggerRadialBlast(at: position, damage: 20 * damageMult)
+            // Base 20 + 10 per level
+            // Level 1 = 30, Level 10 = 120
+            let baseDamage = 20.0 + (Double(ability.level) * 10.0)
+            triggerRadialBlast(at: position, damage: baseDamage * damageMult)
             
         default:
             print("Unknown ability activated: \(ability.definition.name)")
