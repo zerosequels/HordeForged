@@ -3,6 +3,7 @@ import GameplayKit
 class GameTimerSystem: GKComponentSystem<GKComponent> {
     
     var timeRemaining: TimeInterval = 720 // 12 Minutes
+    var totalDuration: TimeInterval = 720
     var isGameOver: Bool = false
     var onTimerExpired: (() -> Void)?
     var onGameEnd: ((Bool) -> Void)? // Keep for Defeat triggering from Manager?
@@ -20,9 +21,11 @@ class GameTimerSystem: GKComponentSystem<GKComponent> {
     func reset(duration: TimeInterval? = nil) {
         if let duration = duration {
             self.timeRemaining = duration
+            self.totalDuration = duration
         } else {
              // Default if not provided
              self.timeRemaining = 720
+             self.totalDuration = 720
         }
         self.isGameOver = false
     }

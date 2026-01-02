@@ -65,7 +65,8 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 
                 if dist < contactDistance {
                     if !playerHealth.isInvulnerable {
-                        playerHealth.currentHealth -= 10
+                        let damage = enemy.component(ofType: AttackComponent.self)?.damage ?? 10
+                        playerHealth.currentHealth -= damage
                         tookDamage = true
                     }
                     break

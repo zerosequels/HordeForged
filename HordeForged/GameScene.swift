@@ -266,15 +266,15 @@ class GameScene: SKScene {
         }
         
         // Spawn Test Enemies
-        let enemy1 = EnemyEntity(color: .red, size: CGSize(width: 30, height: 30), health: 30)
+        let enemy1 = EnemyEntity(type: .walker)
         enemy1.component(ofType: SpriteComponent.self)?.node.position = CGPoint(x: 200, y: 0)
         gameManager.add(enemy1)
         
-        let enemy2 = EnemyEntity(color: .red, size: CGSize(width: 30, height: 30), health: 30)
+        let enemy2 = EnemyEntity(type: .walker)
         enemy2.component(ofType: SpriteComponent.self)?.node.position = CGPoint(x: -200, y: 100)
         gameManager.add(enemy2)
         
-        let enemy3 = EnemyEntity(color: .red, size: CGSize(width: 30, height: 30), health: 30)
+        let enemy3 = EnemyEntity(type: .walker)
         enemy3.component(ofType: SpriteComponent.self)?.node.position = CGPoint(x: 0, y: 200)
         gameManager.add(enemy3)
         

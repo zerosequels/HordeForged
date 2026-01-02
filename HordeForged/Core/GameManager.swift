@@ -229,7 +229,7 @@ public class GameManager {
         guard activeBoss == nil else { return }
         
         // Use Stage Config for boss type?
-        let boss = EnemyEntity(color: .purple, size: CGSize(width: 80, height: 80), health: 500) // Beefy
+        let boss = EnemyEntity(type: .boss)
         boss.component(ofType: SpriteComponent.self)?.node.position = position
         
         if let move = boss.component(ofType: MovementComponent.self) {
