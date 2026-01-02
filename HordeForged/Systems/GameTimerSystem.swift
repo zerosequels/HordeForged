@@ -13,10 +13,18 @@ class GameTimerSystem: GKComponentSystem<GKComponent> {
     }
     
     init(duration: TimeInterval? = nil) {
+        super.init(componentClass: GKComponent.self)
+        reset(duration: duration)
+    }
+    
+    func reset(duration: TimeInterval? = nil) {
         if let duration = duration {
             self.timeRemaining = duration
+        } else {
+             // Default if not provided
+             self.timeRemaining = 720
         }
-        super.init(componentClass: GKComponent.self)
+        self.isGameOver = false
     }
     
     override func update(deltaTime seconds: TimeInterval) {

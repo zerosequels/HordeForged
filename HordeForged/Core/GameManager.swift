@@ -278,11 +278,21 @@ public class GameManager {
     func restartLevel() {
         print("Restarting Level...")
         
-        // Remove All Entities except Player? Or respawn player?
-        // Usually full reset.
+        // Find Player to persist
+        let player = entities.first(where: { $0 is SurvivorEntity })
+        
+        // Remove All Entities except Player
         let allEntities = entities
         for entity in allEntities {
-             remove(entity)
+            if entity !== player {
+                remove(entity)
+            }
+        }
+        
+        // Reset Player Position
+        if let player = player,
+           let sprite = player.component(ofType: SpriteComponent.self) {
+            sprite.node.position = CGPoint(x: 0, y: 0)
         }
         
         // Reset Systems
@@ -295,16 +305,20 @@ public class GameManager {
                 timerDuration = doubleVal
             }
         }
-        gameTimerSystem = GameTimerSystem(duration: timerDuration)
+        
+        // Reset existing timer system instead of replacing it
+        gameTimerSystem.reset(duration: timerDuration)
         
         activeBoss = nil
         
-        // Ask Scene to respawn Player
-        if let gameScene = scene as? GameScene {
-             gameScene.setupGame() // This respawns player and test entities
-        }
-        
         // Prepare new level elements
         setupLevel()
+        
+        // Force update camera to player position immediately
+        if let player = player,
+           let sprite = player.component(ofType: SpriteComponent.self),
+           let gameScene = scene as? GameScene {
+             gameScene.camera?.position = sprite.node.position
+        }
     }
 }
