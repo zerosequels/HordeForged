@@ -100,7 +100,10 @@ class EnemySpawnSystem: GKComponentSystem<GKComponent> {
         // Select Enemy Type from Table
         let type = pickEnemy(from: table)
         
-        let enemy = EnemyEntity(type: type)
+        // Get Stage Index
+        let stageIndex = LevelManager.shared.currentLevelIndex
+        
+        let enemy = EnemyEntity(type: type, stage: stageIndex)
         enemy.component(ofType: SpriteComponent.self)?.node.position = CGPoint(x: spawnX, y: spawnY)
         
         gameManager.add(enemy)

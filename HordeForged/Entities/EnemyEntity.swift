@@ -3,13 +3,28 @@ import SpriteKit
 
 class EnemyEntity: GKEntity {
     
-    init(type: EnemyType) {
+    init(type: EnemyType, stage: Int = 0) {
         super.init()
         
-        let stats = EnemyConfig.stats(for: type)
+        let stats = EnemyConfig.stats(for: type, stage: stage)
         
         // Visuals
-        let spriteComponent = SpriteComponent(color: stats.color, size: stats.size)
+        let spriteComponent: SpriteComponent
+        if let textureName = stats.textureName {
+             // Assuming texture exists, use SKTexture
+             let texture = SKTexture(imageNamed: textureName)
+             // Resize if needed? SpriteComponent(texture:) uses texture size.
+             // If we want fixed size, maybe use color/size constructor and set texture?
+             // Or update SpriteComponent.
+             // Let's assume SpriteComponent(texture:) sets node safely.
+             // But we want to enforce stats.size?
+             // SKShapeNode vs SKSpriteNode: existing SpriteComponent uses SKSpriteNode.
+             spriteComponent = SpriteComponent(texture: texture)
+             spriteComponent.node.xScale = stats.size.width / texture.size().width
+             spriteComponent.node.yScale = stats.size.height / texture.size().height
+        } else {
+             spriteComponent = SpriteComponent(color: stats.color, size: stats.size)
+        }
         addComponent(spriteComponent)
         
         // Health

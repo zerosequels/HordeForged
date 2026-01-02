@@ -229,7 +229,8 @@ public class GameManager {
         guard activeBoss == nil else { return }
         
         // Use Stage Config for boss type?
-        let boss = EnemyEntity(type: .boss)
+        let stageIndex = LevelManager.shared.currentLevelIndex
+        let boss = EnemyEntity(type: .boss, stage: stageIndex)
         boss.component(ofType: SpriteComponent.self)?.node.position = position
         
         if let move = boss.component(ofType: MovementComponent.self) {
