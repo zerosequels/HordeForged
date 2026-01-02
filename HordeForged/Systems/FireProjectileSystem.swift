@@ -81,13 +81,13 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         // Logic: Find enemies in range and damage
         // We need access to enemies. Currently stored in GameManager.
         if let gameScene = scene as? GameScene {
-             let enemies = gameScene.gameManager.entities.filter { $0 is EnemyEntity }
-             for enemy in enemies {
-                 if let enemySprite = enemy.component(ofType: SpriteComponent.self),
-                    let healthCheck = enemy.component(ofType: HealthComponent.self) {
-                     let dist = hypot(enemySprite.node.position.x - position.x, enemySprite.node.position.y - position.y)
+             let targets = gameScene.gameManager.entities.filter { $0 is EnemyEntity || $0 is DestructibleEntity }
+             for target in targets {
+                 if let targetSprite = target.component(ofType: SpriteComponent.self),
+                    let healthCheck = target.component(ofType: HealthComponent.self) {
+                     let dist = hypot(targetSprite.node.position.x - position.x, targetSprite.node.position.y - position.y)
                      if dist < 150 { // Range
-                         gameScene.gameManager.applyDamage(target: enemy, amount: Int(damage))
+                         gameScene.gameManager.applyDamage(target: target, amount: Int(damage))
                          // Optional: Knockback?
                      }
                  }
