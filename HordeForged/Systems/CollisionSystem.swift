@@ -64,8 +64,10 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 let dist = hypot(dx, dy)
                 
                 if dist < contactDistance {
-                    playerHealth.currentHealth -= 10
-                    tookDamage = true
+                    if !playerHealth.isInvulnerable {
+                        playerHealth.currentHealth -= 10
+                        tookDamage = true
+                    }
                     break
                 }
             }
