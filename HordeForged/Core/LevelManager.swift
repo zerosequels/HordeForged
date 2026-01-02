@@ -16,7 +16,12 @@ class LevelManager {
         // Register known stages
         stageConfigs[0] = Stage1Config()
         stageConfigs[1] = Stage2Config()
-        // Add more as they are implemented
+        stageConfigs[2] = Stage3Config()
+        stageConfigs[3] = Stage4Config()
+        stageConfigs[4] = Stage5Config()
+        stageConfigs[5] = Stage6Config()
+        stageConfigs[6] = Stage7Config()
+        stageConfigs[7] = Stage8Config()
     }
     
     func startNewGame() {
@@ -37,8 +42,8 @@ class LevelManager {
         
         // If we have a specific config for this index, use it.
         // Otherwise, wrap around or generate procedural?
-        // Let's wrap 0 and 1 for now.
-        let configIndex = index % 2 
+        // Let's wrap 8 stages for now.
+        let configIndex = index % 8
         
         if let config = stageConfigs[configIndex] {
             self.currentStageConfig = config
