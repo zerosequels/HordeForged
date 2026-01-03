@@ -6,6 +6,10 @@ struct Stage6Config: StageConfig {
     }
     
     var spawnRateMultiplier: Double {
-        return 2.0
+        return 2.5
+    }
+    
+    var stageNumber: Int {
+        return 6
     }
 }

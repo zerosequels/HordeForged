@@ -8,7 +8,26 @@ protocol StageConfig {
     /// Multiplier for enemy spawn rates in this stage.
     var spawnRateMultiplier: Double { get }
     
-    // Future expansion:
-    // var bossType: EnemyType { get }
-    // var availableInteractables: [InteractableType] { get }
+    // MARK: - Tile Map Configuration
+    // Default implementation provided via Extension based on stageNumber
+    var tileSetName: String { get }
+    var baseTileGroupName: String { get }
+    var pathTileGroupName: String? { get }
+    
+    /// The unique number of this stage (1-8)
+    var stageNumber: Int { get }
+}
+
+extension StageConfig {
+    var tileSetName: String {
+        return "stage_\(stageNumber)"
+    }
+    
+    var baseTileGroupName: String {
+        return "Ground"
+    }
+    
+    var pathTileGroupName: String? {
+        return "Path"
+    }
 }
