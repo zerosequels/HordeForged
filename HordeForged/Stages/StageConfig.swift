@@ -12,7 +12,6 @@ protocol StageConfig {
     // Default implementation provided via Extension based on stageNumber
     var tileSetName: String { get }
     var baseTileGroupName: String { get }
-    var pathTileGroupName: String? { get }
     
     /// The unique number of this stage (1-8)
     var stageNumber: Int { get }
@@ -25,9 +24,5 @@ extension StageConfig {
     
     var baseTileGroupName: String {
         return "Ground"
-    }
-    
-    var pathTileGroupName: String? {
-        return "Path"
     }
 }

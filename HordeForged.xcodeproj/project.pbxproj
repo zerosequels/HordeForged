@@ -30,6 +30,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		EA9EA28B2F0AEE2000C3AA98 /* backgrounds */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = backgrounds;
+			sourceTree = "<group>";
+		};
 		EAB648A02F00897500FAE4AE /* HordeForged */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = HordeForged;
@@ -75,6 +80,7 @@
 		EAB648952F00897500FAE4AE = {
 			isa = PBXGroup;
 			children = (
+				EA9EA28B2F0AEE2000C3AA98 /* backgrounds */,
 				EAB648A02F00897500FAE4AE /* HordeForged */,
 				EAB648AE2F00897700FAE4AE /* HordeForgedTests */,
 				EAB648B82F00897700FAE4AE /* HordeForgedUITests */,
@@ -108,6 +114,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				EA9EA28B2F0AEE2000C3AA98 /* backgrounds */,
 				EAB648A02F00897500FAE4AE /* HordeForged */,
 			);
 			name = HordeForged;
