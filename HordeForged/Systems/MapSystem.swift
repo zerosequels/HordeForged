@@ -10,7 +10,11 @@ class MapSystem: GKComponentSystem<GKComponent> {
     // Config: 32x32 tiles per chunk.
     private let tileDim: Int = 32
     private let tileSizePts: CGFloat = 32.0 // Standard Pixel Art Grid
-    private var chunkWidthPts: CGFloat { return CGFloat(tileDim) * tileSizePts }
+    
+    // Scale Factor: 3.0 means 32px tiles look like 96px on screen
+    private let bgScale: CGFloat = 3.0
+    
+    private var chunkWidthPts: CGFloat { return CGFloat(tileDim) * tileSizePts * bgScale }
     
     private let bufferSize: Int = 1
     
@@ -92,6 +96,10 @@ class MapSystem: GKComponentSystem<GKComponent> {
     
     private func createTileMapChunk(x: Int, y: Int, tileSet: SKTileSet, config: StageConfig, key: String) {
         let tileMap = SKTileMapNode(tileSet: tileSet, columns: tileDim, rows: tileDim, tileSize: CGSize(width: tileSizePts, height: tileSizePts))
+        
+        // Apply Scale
+        tileMap.xScale = bgScale
+        tileMap.yScale = bgScale
         
         // Identify Group
         guard let baseGroup = tileSet.tileGroups.first(where: { $0.name == config.baseTileGroupName }) else {
