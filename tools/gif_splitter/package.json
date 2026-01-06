@@ -1,0 +1,13 @@
+{
+  "name": "gif-splitter",
+  "version": "1.0.0",
+  "description": "Splits GIFs into individual PNG frames for Xcode import",
+  "main": "split.js",
+  "scripts": {
+    "start": "node split.js"
+  },
+  "dependencies": {
+    "gif-frames": "^1.0.1",
+    "fs-extra": "^10.0.0"
+  }
+}
