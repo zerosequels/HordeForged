@@ -1,0 +1,30 @@
+
+# macOS
+.DS_Store
+
+# Xcode
+*.auth
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.users
+*.xccheckout
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.pkg
+*.dSYM/
+*.xcresult
+*.swp
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Tools specific
+tools/gif_splitter/output/
+tools/gif_splitter/input/
