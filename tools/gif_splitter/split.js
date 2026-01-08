@@ -71,29 +71,23 @@ function getCustomName(baseName, index) {
     // Only apply to Survivor assets
     if (!baseName.toLowerCase().includes('survivor')) return null;
 
-    // Grid Assumptions: 20 Frames (5 columns x 4 rows) or similar
-    // Row 0 (0-4): Down
-    // Row 1 (5-9): Left
-    // Row 2 (10-14): Right
-    // Row 3 (15-19): Up
+    // Grid Assumptions: 16 Frames (4 columns x 4 rows)
+    // Row 0 (0-3): Up
+    // Row 1 (4-7): Right
+    // Row 2 (8-11): Down
+    // Row 3 (12-15): Left
 
-    // Column 0: Idle
-    // Column 1-4: Walk
-
-    const row = Math.floor(index / 5);
-    const col = index % 5;
+    // 4 Columns per row
+    const row = Math.floor(index / 4);
+    const col = index % 4;
 
     let direction = "";
-    if (row === 0) direction = "down";
-    else if (row === 1) direction = "right"; // Visual check: Row 1 is Side (Right)
-    else if (row === 2) direction = "up";    // Visual check: Row 2 is Back (Up)
-    else if (row === 3) direction = "left";  // Visual check: Row 3 is Side (Left)
+    if (row === 0) direction = "up";
+    else if (row === 1) direction = "right";
+    else if (row === 2) direction = "down";
+    else if (row === 3) direction = "left";
     else return null; // Out of bounds
 
-    if (col === 0) {
-        return `survivor_idle_${direction}_0`;
-    } else {
-        // Walk frames 0, 1, 2, 3
-        return `survivor_walk_${direction}_${col - 1}`;
-    }
+    // Simply map 0-3 to walk frames
+    return `survivor_walk_${direction}_${col}`;
 }
