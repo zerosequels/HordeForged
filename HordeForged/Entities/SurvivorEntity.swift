@@ -9,6 +9,7 @@ class SurvivorEntity: GKEntity {
     public let healthComponent: HealthComponent
     public let experienceComponent: ExperienceComponent
     public let animationComponent: AnimationComponent
+    public let staminaComponent: StaminaComponent
     
     init(imageName: String) {
         // Init Components first
@@ -32,6 +33,11 @@ class SurvivorEntity: GKEntity {
         addComponent(healthComponent)
         addComponent(experienceComponent)
         addComponent(staminaComponent)
+        
+        let inventory = InventoryComponent()
+        // Default Ability: Arcane Bolt
+        inventory.addAbility(ArcaneBolt)
+        addComponent(inventory)
     }
     
     // For shape-based placeholder (useful if assets are missing)

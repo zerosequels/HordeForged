@@ -77,8 +77,11 @@ class AnimationComponent: GKComponent {
     }
     
     private func resolveTextureName() -> String {
+        // We currently share 'walk' frames for idle (just using frame 0)
+        let stateName = (currentState == .idle) ? "walk" : currentState.rawValue
+        
         // Format: survivor_walk_down_0
-        return "\(baseName)_\(currentState.rawValue)_\(currentDirection.rawValue)_\(currentFrameIndex)"
+        return "\(baseName)_\(stateName)_\(currentDirection.rawValue)_\(currentFrameIndex)"
     }
     
     private func getTexture(named name: String) -> SKTexture {
@@ -86,15 +89,10 @@ class AnimationComponent: GKComponent {
             return cached
         }
         
-        // Try to load from Atlas first, then global
-        let texture: SKTexture
-        // Note: SKTextureAtlas(named:) can be expensive if called every frame, 
-        // but typically SpriteKit caches atlases internally.
-        // However, referencing the texture directly by name usually works if it's in an atlas.
+        // Load Texture
+        let texture = SKTexture(imageNamed: name)
         
-        texture = SKTexture(imageNamed: name)
-        
-        // Simple Filtering for pixel art (avoid blur)
+        // Simple Filtering for pixel art
         texture.filteringMode = .nearest
         
         textureCache[name] = texture

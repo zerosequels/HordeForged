@@ -7,6 +7,7 @@ public class GameManager {
     // Component systems to update components in a deterministic order
     lazy var componentSystems: [GKComponentSystem] = {
         let movementSystem = GKComponentSystem(componentClass: MovementComponent.self)
+        let animationSystem = GKComponentSystem(componentClass: AnimationComponent.self)
         // We added EnemyMovementSystem manually, but standard MovementComponents (like on player/projectile) need updates.
         // Wait, does MovementComponent need to be in componentSystems if EnemyMovementSystem is handling it?
         // MovementComponent.update() applies velocity.
@@ -14,7 +15,7 @@ public class GameManager {
         // So YES, MovementComponent MUST be updated.
         // Standard 'movementSystem' here does that.
         // EnemyEntity has MovementComponent, so it will be added to this if we check for it.
-        return [movementSystem, self.dashSystem]
+        return [movementSystem, self.dashSystem, animationSystem]
     }()
     
     var fireProjectileSystem: FireProjectileSystem!
@@ -187,6 +188,11 @@ public class GameManager {
         
         // Interactables
         interactableSpawnSystem.update(deltaTime: deltaTime)
+        
+        // Update Entities (for SurvivorEntity logic etc)
+        for entity in entities {
+            entity.update(deltaTime: deltaTime)
+        }
     }
     
     func checkDefeat() {

@@ -20,7 +20,7 @@ async function processGif(filename) {
     console.log(`Processing: ${filename} -> ${fileOutputFolder}`);
 
     try {
-        const frameData = await gifFrames({ url: path.join(INPUT_DIR, filename), frames: 'all', outputType: 'png', cumulative: true });
+        const frameData = await gifFrames({ url: path.join(INPUT_DIR, filename), frames: 'all', outputType: 'png', cumulative: false });
 
         for (let i = 0; i < frameData.length; i++) {
             const frame = frameData[i];

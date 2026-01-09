@@ -232,7 +232,8 @@ class GameScene: SKScene {
         gameManager = GameManager(scene: self)
         
         // Test Entity: "The Player"
-        let player = SurvivorEntity(color: .blue, size: CGSize(width: 40, height: 40))
+        // Use the initial frame. AnimationComponent will take over updates.
+        let player = SurvivorEntity(imageName: "survivor_walk_down_0")
         self.player = player
         
         // Initial velocity is zero, controlled by joystick
