@@ -89,5 +89,6 @@ function getCustomName(baseName, index) {
     else return null; // Out of bounds
 
     // Simply map 0-3 to walk frames
-    return `survivor_walk_${direction}_${col}`;
+    // Use the actual filename (e.g. survivor_paladin) as the prefix
+    return `${baseName}_walk_${direction}_${col}`;
 }

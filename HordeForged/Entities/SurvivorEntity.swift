@@ -11,12 +11,16 @@ class SurvivorEntity: GKEntity {
     public let animationComponent: AnimationComponent
     public let staminaComponent: StaminaComponent
     
-    init(imageName: String) {
+    // Default to paladin for now, but allow passing others
+    init(characterName: String = "survivor_paladin") {
         // Init Components first
-        let texture = SKTexture(imageNamed: imageName)
+        // Construct initial frame name: survivor_paladin_walk_down_0
+        let initialImage = "\(characterName)_walk_down_0"
+        let texture = SKTexture(imageNamed: initialImage)
+        
         self.spriteComponent = SpriteComponent(texture: texture)
-        // Hardcoded for now based on Guide: Atlas 'survivor_atlas', Base 'survivor'
-        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: "survivor")
+        // Atlas 'survivor_atlas', Base Name = characterName (e.g. 'survivor_paladin')
+        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: characterName)
         
         self.movementComponent = MovementComponent()
         self.healthComponent = HealthComponent(maxHealth: 50)
