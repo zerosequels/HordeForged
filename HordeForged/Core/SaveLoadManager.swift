@@ -14,6 +14,8 @@ public class SaveLoadManager {
     
     public init() {}
     
+    private var cachedSave: DeepDwarfSave?
+    
     public func save(_ data: DeepDwarfSave) throws {
         guard let fileURL = saveFileURL else {
             throw SaveLoadError.missingDirectory
@@ -23,10 +25,23 @@ public class SaveLoadManager {
         encoder.outputFormatting = .prettyPrinted
         let jsonData = try encoder.encode(data)
         try jsonData.write(to: fileURL)
+        
+        // Update Cache
+        self.cachedSave = data
     }
     
     public func load() -> DeepDwarfSave? {
+        // Return memory cache if available
+        if let cache = cachedSave {
+            return cache
+        }
+        
         guard let fileURL = saveFileURL else { return nil }
+        
+        // Check existence first to avoid error log spam on new installs
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            return nil
+        }
         
         do {
             let data = try Data(contentsOf: fileURL)
@@ -42,6 +57,9 @@ public class SaveLoadManager {
                 save.unlockedHeroes.append(contentsOf: missing)
                 try? self.save(save) // Auto-save the fix
             }
+            
+            // Update Cache
+            self.cachedSave = save
             
             return save
         } catch {
@@ -89,6 +107,9 @@ public class SaveLoadManager {
         if FileManager.default.fileExists(atPath: fileURL.path) {
             try? FileManager.default.removeItem(at: fileURL)
         }
+        
+        // Clear Cache
+        self.cachedSave = nil
     }
 }
 

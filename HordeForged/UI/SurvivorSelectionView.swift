@@ -80,7 +80,7 @@ struct SurvivorSelectionView: View {
                 // Survivor List
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 15) {
-                        ForEach(SurvivorType.allCases) { survivor in
+                        ForEach(SurvivorType.ordered) { survivor in
                             SurvivorCard(survivor: survivor, 
                                          isSelected: appState.selectedSurvivor == survivor, 
                                          isUnlocked: SaveLoadManager.shared.isSurvivorUnlocked(survivor))

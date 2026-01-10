@@ -45,4 +45,22 @@ public enum SurvivorType: String, CaseIterable, Identifiable, Codable {
             return false
         }
     }
+    
+    /// The specific order survivors should be displayed in the UI.
+    public static let ordered: [SurvivorType] = [
+        // Heroes (Defaults)
+        .paladin, .cleric, .red_wizard,
+        
+        // Fighters
+        .samurai, .blackswordsman, .spellblade,
+        
+        // Elementalists
+        .pyromancer, .hydromancer, .aeromancer, .terramancer,
+        
+        // Mystics
+        .druid, .sorcerer, .hermit, .herald, .dracula,
+        
+        // Constructs
+        .golem, .stone_golem, .iron_golem
+    ]
 }
