@@ -16,17 +16,34 @@ extension Color {
 }
 
 struct MainGameView: View {
+    let selectedSurvivor: SurvivorType
+    let onGameOver: () -> Void
+    
     var body: some View {
         ZStack {
-            GameViewRepresentable() // The SKView content will go here
+            GameViewRepresentable(selectedSurvivor: selectedSurvivor, onGameOver: onGameOver)
                 .ignoresSafeArea()
         }
     }
 }
 
 struct ContentView: View {
+    @StateObject private var appState = AppState()
+    
     var body: some View {
-        MainGameView()
+        Group {
+            switch appState.currentScreen {
+            case .selection:
+                SurvivorSelectionView(appState: appState)
+            case .game:
+                MainGameView(selectedSurvivor: appState.selectedSurvivor) {
+                    // On Game Over (or return to menu)
+                    withAnimation {
+                        appState.currentScreen = .selection
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -6,6 +6,9 @@ class GameScene: SKScene {
     
     private let virtualJoystick = VirtualJoystick()
     var player: SurvivorEntity?
+    var selectedSurvivorName: String = "survivor_paladin"
+    
+    // Camera
     
     // Camera
     private let cameraNode = SKCameraNode()
@@ -233,7 +236,9 @@ class GameScene: SKScene {
         
         // Test Entity: "The Player"
         // Use the character name (e.g. survivor_paladin)
-        let player = SurvivorEntity(characterName: "survivor_paladin")
+        // Test Entity: "The Player"
+        // Use the character name (e.g. survivor_paladin)
+        let player = SurvivorEntity(characterName: selectedSurvivorName)
         self.player = player
         
         // Initial velocity is zero, controlled by joystick

@@ -10,6 +10,9 @@ class GameViewController: UIViewController {
     var skView: SKView!
     var hostingController: UIViewController?
     
+    var selectedSurvivor: SurvivorType = .paladin
+    var onGameEnd: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,6 +30,9 @@ class GameViewController: UIViewController {
 
         // Present the GameScene
         let scene = GameScene(size: view.bounds.size)
+        // Pass survivor name to simple Property or Setup method later
+        // But better to have custom init or configure
+        scene.selectedSurvivorName = selectedSurvivor.assetPrefix
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
         
@@ -108,7 +114,11 @@ class GameViewController: UIViewController {
         
         // Show UI
         let gameOverView = GameOverView(isVictory: isVictory) { [weak self] in
-            self?.restartGame()
+            // Return to Menu
+            self?.dismiss(animated: true) {
+                print("Calling onGameEnd")
+                self?.onGameEnd?()
+            }
         }
         
         let controller = UIHostingController(rootView: gameOverView)
@@ -236,8 +246,14 @@ class GameViewController: UIViewController {
 // MARK: - GameViewRepresentable (Bridge SwiftUI to UIKit)
 
 struct GameViewRepresentable: UIViewControllerRepresentable {
+    let selectedSurvivor: SurvivorType
+    let onGameOver: () -> Void
+    
     func makeUIViewController(context: Context) -> GameViewController {
-        return GameViewController()
+        let vc = GameViewController()
+        vc.selectedSurvivor = selectedSurvivor
+        vc.onGameEnd = onGameOver
+        return vc
     }
 
     func updateUIViewController(_ uiViewController: GameViewController, context: Context) {
