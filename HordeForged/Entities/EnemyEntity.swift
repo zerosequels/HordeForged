@@ -16,7 +16,6 @@ class EnemyEntity: GKEntity {
              // Resize if needed? SpriteComponent(texture:) uses texture size.
              // If we want fixed size, maybe use color/size constructor and set texture?
              // Or update SpriteComponent.
-             // Let's assume SpriteComponent(texture:) sets node safely.
              // But we want to enforce stats.size?
              // SKShapeNode vs SKSpriteNode: existing SpriteComponent uses SKSpriteNode.
              spriteComponent = SpriteComponent(texture: texture)
@@ -26,6 +25,26 @@ class EnemyEntity: GKEntity {
              spriteComponent = SpriteComponent(color: stats.color, size: stats.size)
         }
         addComponent(spriteComponent)
+        
+        // Animations
+        if let textureName = stats.textureName {
+            // "enemy_walker_stage0" -> use atlas "enemy_atlas" or similar?
+            // Actually, plan says use textureName as baseName.
+            // Assumption: Atlas name "enemies" or "enemy_atlas" contains all? Or separate atlas per enemy?
+            // AnimationComponent(atlasName: "enemy_atlas", baseName: textureName)
+            // Let's assume a shared atlas "enemy_atlas" for now, or just use loose files if atlas unused.
+            // AnimationComponent implementation currently takes atlasName but uses it?
+            // Checking AnimationComponent... it takes atlasName but uses imageNamed for loose files if not in atlas?
+            // The existing AnimationComponent.getTexture uses SKTexture(imageNamed: name), which works for both loose and atlas (if loaded).
+            // Let's use "enemy_atlas" as a convention.
+            
+            let animationComponent = AnimationComponent(atlasName: "enemy_atlas", baseName: textureName)
+            addComponent(animationComponent)
+        } else {
+            // Fallback dummy
+            let animationComponent = AnimationComponent(atlasName: "none", baseName: "none")
+            addComponent(animationComponent)
+        }
         
         // Health
         let healthComponent = HealthComponent(maxHealth: stats.health)
@@ -101,5 +120,37 @@ class EnemyEntity: GKEntity {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func update(deltaTime seconds: TimeInterval) {
+        super.update(deltaTime: seconds)
+        
+        // Sync Animation with Movement
+        guard let movementComponent = component(ofType: MovementComponent.self),
+              let animationComponent = component(ofType: AnimationComponent.self) else {
+            return
+        }
+        
+        let velocity = movementComponent.velocity
+        
+        // Determine State
+        if velocity.dx == 0 && velocity.dy == 0 {
+            // Idle
+            animationComponent.setAnimation(state: .idle, direction: animationComponent.currentDirection)
+        } else {
+            // Moving
+            var direction: AnimationDirection = animationComponent.currentDirection
+            
+            // Simple 4-way logic
+            if abs(velocity.dx) > abs(velocity.dy) {
+                // Horizontal Dominant
+                direction = velocity.dx > 0 ? .right : .left
+            } else {
+                // Vertical Dominant
+                direction = velocity.dy > 0 ? .up : .down
+            }
+            
+            animationComponent.setAnimation(state: .walk, direction: direction)
+        }
     }
 }

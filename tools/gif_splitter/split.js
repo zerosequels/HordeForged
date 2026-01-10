@@ -68,8 +68,11 @@ async function main() {
 main();
 
 function getCustomName(baseName, index) {
-    // Only apply to Survivor assets
-    if (!baseName.toLowerCase().includes('survivor')) return null;
+    // Keywords to trigger grid processing
+    const keywords = ['survivor', 'enemy', 'brute', 'boss', 'walker', 'runner', 'elite', 'swarmer'];
+
+    // Check if filename contains any keyword
+    if (!keywords.some(k => baseName.toLowerCase().includes(k))) return null;
 
     // Grid Assumptions: 16 Frames (4 columns x 4 rows)
     // Row 0 (0-3): Up
@@ -89,6 +92,6 @@ function getCustomName(baseName, index) {
     else return null; // Out of bounds
 
     // Simply map 0-3 to walk frames
-    // Use the actual filename (e.g. survivor_paladin) as the prefix
+    // Use the actual filename as the prefix
     return `${baseName}_walk_${direction}_${col}`;
 }
