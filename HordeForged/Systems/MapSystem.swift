@@ -102,14 +102,18 @@ class MapSystem: GKComponentSystem<GKComponent> {
         tileMap.yScale = bgScale
         
         // Identify Group
-        guard let baseGroup = tileSet.tileGroups.first(where: { $0.name == config.baseTileGroupName }) else {
-             print("Warning: Base TileGroup '\(config.baseTileGroupName)' not found in set '\(config.tileSetName)'.")
+        // Identify Group
+        // Try to find the specific "Ground" group, but fallback to the first one available if expected name fails.
+        let baseGroup = tileSet.tileGroups.first(where: { $0.name == config.baseTileGroupName }) ?? tileSet.tileGroups.first
+        
+        guard let group = baseGroup else {
+             print("Warning: No TileGroups found in set '\(config.tileSetName)'.")
              createFallbackChunk(x: x, y: y, color: config.stageColor, key: key)
              return
         }
         
         // Fill Logic: Simple Flood Fill
-        tileMap.fill(with: baseGroup)
+        tileMap.fill(with: group)
         
         // Position Chunk
         let posX = CGFloat(x) * chunkWidthPts
