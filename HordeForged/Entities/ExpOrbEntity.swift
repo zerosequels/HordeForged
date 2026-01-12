@@ -7,7 +7,10 @@ class ExpOrbEntity: GKEntity {
         super.init()
         
         // Visuals
-        let spriteComponent = SpriteComponent(color: .green, size: CGSize(width: 10, height: 10))
+        // Visuals
+        let texture = SKTexture(imageNamed: "exp_orb")
+        let spriteComponent = SpriteComponent(texture: texture)
+        spriteComponent.node.size = CGSize(width: 15, height: 15) // Bumped for visibility
         spriteComponent.node.position = position
         addComponent(spriteComponent)
         

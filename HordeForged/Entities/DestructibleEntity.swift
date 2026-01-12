@@ -7,8 +7,10 @@ class DestructibleEntity: GKEntity {
         super.init()
         
         // Sprite
-        let texture = SKTexture(imageNamed: "box") // Placeholder or draw shape
-        let node = SKSpriteNode(color: .brown, size: CGSize(width: 30, height: 30))
+        // Sprite
+        let texture = SKTexture(imageNamed: "destructible_crate")
+        let node = SKSpriteNode(texture: texture)
+        node.size = CGSize(width: 30, height: 30)
         node.position = position
         
         // Debug Label

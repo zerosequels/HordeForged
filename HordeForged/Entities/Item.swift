@@ -25,6 +25,7 @@ struct ItemDefinition: Hashable {
     let name: String
     let description: String
     let rarity: ItemRarity
+    let iconName: String
     let modifiers: [StatModifier]
     
     func hash(into hasher: inout Hasher) {

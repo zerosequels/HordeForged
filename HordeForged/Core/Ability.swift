@@ -23,10 +23,11 @@ struct AbilityDefinition: Hashable {
     // Base stats or logic identifier could go here
     // For MVP, we might hardcode logic based on ID
     
-    init(id: String, name: String, description: String, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
+    init(id: String, name: String, description: String, iconName: String, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
         self.id = id
         self.name = name
         self.description = description
+        self.iconName = iconName
         self.type = type
         self.rarity = rarity
         self.maxLevel = maxLevel

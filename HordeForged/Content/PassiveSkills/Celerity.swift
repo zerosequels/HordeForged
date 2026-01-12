@@ -4,6 +4,7 @@ let Celerity = AbilityDefinition(
     id: "celerity",
     name: "Celerity",
     description: "Increases movement speed.",
+    iconName: "celerity",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

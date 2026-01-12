@@ -7,9 +7,15 @@ class ProjectileEntity: GKEntity {
         super.init()
         
         // Visuals
-        let texture = SKTexture(imageNamed: "projectile_square") // Placeholder or generated
-        // Fallback to color if texture fails or just use simple generic sprite comp
-        let spriteComponent = SpriteComponent(color: color, size: size)
+        // Visuals
+        let texture = SKTexture(imageNamed: "projectile_square")
+        let spriteComponent = SpriteComponent(texture: texture)
+        spriteComponent.node.size = CGSize(width: 16, height: 16)
+        spriteComponent.node.color = color // Tint with the passed color
+        spriteComponent.node.colorBlendFactor = 1.0 // Fully tint or partial? 
+        // Actually, if we want the sprite to show, maybe 0.5?
+        // Or if the sprite is white, we can tint it fully.
+        // Let's assume sprite is white.
         addComponent(spriteComponent)
         
         // Movement

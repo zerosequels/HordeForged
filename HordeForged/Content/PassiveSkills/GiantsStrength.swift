@@ -4,6 +4,7 @@ let GiantsStrength = AbilityDefinition(
     id: "giants_strength",
     name: "Giant's Strength",
     description: "Increases damage.",
+    iconName: "giants_strength",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

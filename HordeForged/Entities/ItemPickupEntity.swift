@@ -13,10 +13,10 @@ class ItemPickupEntity: GKEntity {
         
         // Visuals - White Box with Green Stroke for now, or use ItemDefinition name?
         // Let's look up the definition for color/name if possible, but keeping it simple for now.
-        let node = SKShapeNode(rectOf: CGSize(width: 20, height: 20), cornerRadius: 4)
-        node.fillColor = .black
-        node.strokeColor = .yellow // Legendary-ish
-        node.lineWidth = 2
+        // Visuals
+        let texture = SKTexture(imageNamed: "pickup_box")
+        let node = SKSpriteNode(texture: texture)
+        node.size = CGSize(width: 25, height: 25)
         node.position = position
         node.zPosition = 0
         

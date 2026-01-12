@@ -31,6 +31,7 @@ struct LevelUpView: View {
                             UpgradeButton(
                                 title: option.definition.name,
                                 description: option.definition.description,
+                                iconName: option.definition.iconName, // Pass iconName
                                 levelText: option.currentLevel == 0 ? "New!" : "Lv \(option.currentLevel) -> \(option.nextLevel)"
                             ) {
                                 onSelectUpgrade(option.definition)
@@ -47,12 +48,21 @@ struct LevelUpView: View {
 struct UpgradeButton: View {
     let title: String
     let description: String
+    let iconName: String // New
     let levelText: String
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 15) {
+                // Icon
+                Image(iconName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 48, height: 48)
+                    .background(Color.gray.opacity(0.3)) // Placeholder bg if transparent
+                    .cornerRadius(8)
+                
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.headline)
@@ -72,6 +82,6 @@ struct UpgradeButton: View {
             .background(Color.white)
             .cornerRadius(10)
         }
-        .frame(height: 60)
+        .frame(height: 70) // Increased height for icon
     }
 }

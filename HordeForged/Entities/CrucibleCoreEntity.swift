@@ -7,8 +7,10 @@ class CrucibleCoreEntity: GKEntity {
         super.init()
         
         // Visuals
-        let node = SKShapeNode(rectOf: CGSize(width: 60, height: 60), cornerRadius: 5)
-        node.fillColor = .cyan
+        // Visuals
+        let texture = SKTexture(imageNamed: "crucible_core")
+        let node = SKSpriteNode(texture: texture)
+        node.size = CGSize(width: 60, height: 60) // Scale to target size
         node.position = position
         node.zPosition = 1
         

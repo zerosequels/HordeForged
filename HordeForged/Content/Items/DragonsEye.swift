@@ -5,6 +5,7 @@ let DragonsEye = ItemDefinition(
     name: "Dragon's Eye",
     description: "+5% Damage",
     rarity: .common,
+    iconName: "dragons_eye",
     modifiers: [
         StatModifier(type: .damage, value: 0.05, isMultiplier: false)
     ]
