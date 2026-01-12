@@ -11,8 +11,10 @@ class EnemyEntity: GKEntity {
         // Visuals
         let spriteComponent: SpriteComponent
         if let textureName = stats.textureName {
-             // Assuming texture exists, use SKTexture
-             let texture = SKTexture(imageNamed: textureName)
+             // Construct initial frame name: enemy_boss_stage1_walk_down_0
+             // Matches split.js output logic
+             let initialImage = "\(textureName)_walk_down_0"
+             let texture = SKTexture(imageNamed: initialImage)
              // Resize if needed? SpriteComponent(texture:) uses texture size.
              // If we want fixed size, maybe use color/size constructor and set texture?
              // Or update SpriteComponent.

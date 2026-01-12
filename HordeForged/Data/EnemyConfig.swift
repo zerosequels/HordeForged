@@ -30,13 +30,13 @@ struct EnemyConfig {
         case .runner:
             stats = EnemyStats(health: 15, speed: 90.0, damage: 5, size: CGSize(width: 48, height: 48), color: .yellow, xpValue: 15, textureName: nil)
         case .brute:
-            stats = EnemyStats(health: 100, speed: 25.0, damage: 20, size: CGSize(width: 48, height: 48), color: .blue, xpValue: 50, textureName: nil)
+            stats = EnemyStats(health: 100, speed: 25.0, damage: 20, size: CGSize(width: 72, height: 72), color: .blue, xpValue: 50, textureName: nil)
         case .elite:
-            stats = EnemyStats(health: 200, speed: 45.0, damage: 15, size: CGSize(width: 48, height: 48), color: .cyan, xpValue: 100, textureName: nil)
+            stats = EnemyStats(health: 200, speed: 45.0, damage: 15, size: CGSize(width: 64, height: 64), color: .cyan, xpValue: 100, textureName: nil)
         case .swarmer:
-            stats = EnemyStats(health: 5, speed: 55.0, damage: 2, size: CGSize(width: 48, height: 48), color: .green, xpValue: 5, textureName: nil)
+            stats = EnemyStats(health: 5, speed: 55.0, damage: 2, size: CGSize(width: 36, height: 36), color: .green, xpValue: 5, textureName: nil)
         case .boss:
-            stats = EnemyStats(health: 1000, speed: 20.0, damage: 30, size: CGSize(width: 48, height: 48), color: .purple, xpValue: 500, textureName: nil)
+            stats = EnemyStats(health: 1000, speed: 20.0, damage: 30, size: CGSize(width: 96, height: 96), color: .purple, xpValue: 500, textureName: nil)
         }
         
 
