@@ -10,8 +10,21 @@ class ExpOrbEntity: GKEntity {
         // Visuals
         let texture = SKTexture(imageNamed: "exp_orb")
         let spriteComponent = SpriteComponent(texture: texture)
-        spriteComponent.node.size = CGSize(width: 15, height: 15) // Bumped for visibility
+        if let spriteNode = spriteComponent.node as? SKSpriteNode {
+            spriteNode.size = CGSize(width: 25, height: 25) // Bumped for visibility
+        }
         spriteComponent.node.position = position
+        
+        #if DEBUG
+        if let spriteNode = spriteComponent.node as? SKSpriteNode {
+             let dCircle = SKShapeNode(circleOfRadius: spriteNode.size.width / 2) // Radius
+             dCircle.strokeColor = .blue
+             dCircle.lineWidth = 1.0
+             dCircle.zPosition = 99
+             spriteNode.addChild(dCircle)
+        }
+        #endif
+        
         addComponent(spriteComponent)
         
         // Value

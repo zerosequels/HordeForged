@@ -9,7 +9,12 @@ class SurvivorEntity: GKEntity {
     public let healthComponent: HealthComponent
     public let experienceComponent: ExperienceComponent
     public let animationComponent: AnimationComponent
+
     public let staminaComponent: StaminaComponent
+    
+    #if DEBUG
+    public var debugDirectionLine: SKShapeNode?
+    #endif
     
     // Default to paladin for now, but allow passing others
     init(characterName: String = "survivor_paladin") {

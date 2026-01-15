@@ -32,7 +32,15 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 guard let enemySprite = enemy.component(ofType: SpriteComponent.self),
                       let healthComp = enemy.component(ofType: HealthComponent.self) else { continue }
                 
-                if projSprite.node.frame.intersects(enemySprite.node.frame) {
+                // Calculate Projectile Hitbox Frame
+                // Default to accumulated frame size if cast fails
+                let hitboxSize = (projectile as? ProjectileEntity)?.hitboxSize ?? projSprite.node.calculateAccumulatedFrame().size
+                // Center hitbox on projectile position
+                let projX = projSprite.node.position.x - hitboxSize.width / 2
+                let projY = projSprite.node.position.y - hitboxSize.height / 2
+                let projRect = CGRect(x: projX, y: projY, width: hitboxSize.width, height: hitboxSize.height)
+                
+                if projRect.intersects(enemySprite.node.frame) {
                     // Apply Damage via Manager (Handles visuals + death)
                     gameScene.gameManager.applyDamage(target: enemy, amount: damageComp.damageAmount)
                     

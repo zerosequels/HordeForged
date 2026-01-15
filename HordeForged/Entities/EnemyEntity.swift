@@ -23,6 +23,20 @@ class EnemyEntity: GKEntity {
              spriteComponent = SpriteComponent(texture: texture)
              spriteComponent.node.xScale = stats.size.width / texture.size().width
              spriteComponent.node.yScale = stats.size.height / texture.size().height
+             
+             #if DEBUG
+             let debugBox = SKShapeNode(rectOf: texture.size()) // Use texture size since we are scaling node
+             // Or better, use rectOf 1x1 presumably scaled? No, SKShapeNode children inherit scale.
+             // If we add to spriteComponent.node checking scale...
+             // Let's use stats.size and add to spriteComponent.node but beware scale.
+             // Actually, simplest is to add to spriteComponent.node and use size of texture (unscaled) 
+             // because the node itself is scaled to match stats.size.
+             let dBox = SKShapeNode(rectOf: texture.size())
+             dBox.strokeColor = .green
+             dBox.lineWidth = 2.0 / min(spriteComponent.node.xScale, spriteComponent.node.yScale) // Inverse scale linewidth
+             dBox.zPosition = 99
+             spriteComponent.node.addChild(dBox)
+             #endif
         } else {
              spriteComponent = SpriteComponent(color: stats.color, size: stats.size)
         }

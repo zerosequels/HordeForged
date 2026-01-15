@@ -20,11 +20,13 @@ struct ItemPickupView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 20) {
-                // Icon (Placeholder)
-                RoundedRectangle(cornerRadius: 15)
-                    .fill(Color.hordeGold)
-                    .frame(width: 80, height: 80)
-                    .overlay(Text("?").font(.largeTitle).foregroundColor(.black))
+                // Icon
+                Image(item.iconName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+                    .background(Color.gray.opacity(0.3))
+                    .cornerRadius(15)
                 
                 Text(item.name)
                     .font(.largeTitle)

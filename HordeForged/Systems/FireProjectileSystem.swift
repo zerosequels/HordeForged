@@ -57,7 +57,7 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
             // Base 10 + 5 per level
             // Level 1 = 15, Level 10 = 60
             let baseDamage = 10.0 + (Double(ability.level) * 5.0)
-            fireProjectile(from: source, damage: baseDamage * damageMult)
+            fireProjectile(from: source, damage: baseDamage * damageMult, textureName: ability.definition.projectileName, rotationOffset: ability.definition.projectileRotationOffset)
             
         case "thunderclap":
             // Base 20 + 10 per level
@@ -102,7 +102,7 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         
     }
     
-    func fireProjectile(from source: GKEntity? = nil, damage: Double = 10) { 
+    func fireProjectile(from source: GKEntity? = nil, damage: Double = 10, textureName: String? = nil, rotationOffset: CGFloat = 0) { 
         // If source provided, use it, else fallback to cached playerEntity
         guard let sourceEntity = source ?? playerEntity,
               let spriteComponent = sourceEntity.component(ofType: SpriteComponent.self) else { return }
@@ -118,12 +118,16 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         
         // Create Projectile
         let projectile = ProjectileEntity(color: .yellow, 
-                                        size: CGSize(width: 10, height: 10), 
+                                        size: CGSize(width: 96, height: 96), 
                                         velocity: direction, 
-                                        damage: Int(damage))
+                                        damage: Int(damage),
+                                        textureName: textureName)
         
         if let projSprite = projectile.component(ofType: SpriteComponent.self) {
             projSprite.node.position = playerPosition
+            // Calculate base rotation (facing direction)
+            let angle = atan2(direction.dy, direction.dx)
+            projSprite.node.zRotation = angle + rotationOffset
         }
 
         

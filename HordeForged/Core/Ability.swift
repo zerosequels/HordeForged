@@ -15,6 +15,9 @@ struct AbilityDefinition: Hashable {
     let id: String
     let name: String
     let description: String
+    let iconName: String
+    let projectileName: String?
+    let projectileRotationOffset: CGFloat // Radians
     let type: AbilityType
     let rarity: AbilityRarity
     let maxLevel: Int
@@ -23,11 +26,13 @@ struct AbilityDefinition: Hashable {
     // Base stats or logic identifier could go here
     // For MVP, we might hardcode logic based on ID
     
-    init(id: String, name: String, description: String, iconName: String, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
+    init(id: String, name: String, description: String, iconName: String, projectileName: String? = nil, projectileRotationOffset: CGFloat = 0, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
         self.id = id
         self.name = name
         self.description = description
         self.iconName = iconName
+        self.projectileName = projectileName
+        self.projectileRotationOffset = projectileRotationOffset
         self.type = type
         self.rarity = rarity
         self.maxLevel = maxLevel
