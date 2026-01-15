@@ -3,19 +3,24 @@ import GameplayKit
 
 class DestructibleEntity: GKEntity {
     
+    public var hitboxSize: CGSize = .zero
+    
     init(position: CGPoint, lootTable: [LootItem]) {
         super.init()
         
         // Sprite
-        // Sprite
         let texture = SKTexture(imageNamed: "destructible_crate")
         let node = SKSpriteNode(texture: texture)
-        node.size = CGSize(width: 96, height: 96)
+        let size = CGSize(width: 96, height: 96) // Captured size
+        node.size = size
         node.position = position
         node.zPosition = 10 // Ensure above ground
         
+        // Hitbox: 50% of visual size
+        self.hitboxSize = CGSize(width: size.width * 0.5, height: size.height * 0.5)
+        
         #if DEBUG
-        let dBox = SKShapeNode(rectOf: node.size)
+        let dBox = SKShapeNode(rectOf: self.hitboxSize)
         dBox.strokeColor = .green
         dBox.lineWidth = 2.0
         dBox.zPosition = 99

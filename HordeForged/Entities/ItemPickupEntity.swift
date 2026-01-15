@@ -6,22 +6,26 @@ class ItemPickupEntity: GKEntity {
     let itemID: String
     let count: Int
     
+    public var hitboxSize: CGSize = .zero
+    
     init(itemID: String, count: Int, position: CGPoint) {
         self.itemID = itemID
         self.count = count
         super.init()
         
-        // Visuals - White Box with Green Stroke for now, or use ItemDefinition name?
-        // Let's look up the definition for color/name if possible, but keeping it simple for now.
         // Visuals
         let texture = SKTexture(imageNamed: "pickup_box")
         let node = SKSpriteNode(texture: texture)
-        node.size = CGSize(width: 75, height: 75)
+        let size = CGSize(width: 75, height: 75) // Captured size
+        node.size = size
         node.position = position
         node.zPosition = 0
         
+        // Hitbox: 50% of visual size
+        self.hitboxSize = CGSize(width: size.width * 0.5, height: size.height * 0.5)
+        
         #if DEBUG
-        let dBox = SKShapeNode(rectOf: node.size)
+        let dBox = SKShapeNode(rectOf: self.hitboxSize)
         dBox.strokeColor = .blue
         dBox.lineWidth = 2.0
         dBox.zPosition = 99

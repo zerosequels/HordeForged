@@ -134,7 +134,13 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 guard let potSprite = pot.component(ofType: SpriteComponent.self),
                       let healthComp = pot.component(ofType: HealthComponent.self) else { continue }
                 
-                if projSprite.node.frame.intersects(potSprite.node.frame) {
+                // Calculate Destructible Hitbox Frame
+                let hitboxSize = (pot as? DestructibleEntity)?.hitboxSize ?? potSprite.node.calculateAccumulatedFrame().size
+                let potX = potSprite.node.position.x - hitboxSize.width / 2
+                let potY = potSprite.node.position.y - hitboxSize.height / 2
+                let potRect = CGRect(x: potX, y: potY, width: hitboxSize.width, height: hitboxSize.height)
+                
+                if projSprite.node.frame.intersects(potRect) {
                      healthComp.currentHealth -= damageComp.damageAmount
                      gameScene.gameManager.remove(projectile)
                      
@@ -258,7 +264,13 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
             guard let pickupEntity = pickup as? ItemPickupEntity,
                   let pickupSprite = pickupEntity.component(ofType: SpriteComponent.self) else { continue }
             
-             if pickupSprite.node.frame.intersects(playerSprite.node.frame) {
+             // Calculate Pickup Hitbox Frame
+             let hitboxSize = pickupEntity.hitboxSize // Init is guaranteed to set this now
+             let pickX = pickupSprite.node.position.x - hitboxSize.width / 2
+             let pickY = pickupSprite.node.position.y - hitboxSize.height / 2
+             let pickRect = CGRect(x: pickX, y: pickY, width: hitboxSize.width, height: hitboxSize.height)
+             
+             if pickRect.intersects(playerSprite.node.frame) {
                  // Add to Inventory
                  if let inventory = player.component(ofType: InventoryComponent.self),
                     let itemDef = ProgressionManager.shared.allItems.first(where: { $0.id == pickupEntity.itemID }) {
