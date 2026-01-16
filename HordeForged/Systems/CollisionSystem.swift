@@ -38,9 +38,22 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 // Center hitbox on projectile position
                 let projX = projSprite.node.position.x - hitboxSize.width / 2
                 let projY = projSprite.node.position.y - hitboxSize.height / 2
+                // We use calculateAccumulatedFrame for the enemy currently, which is full size. 
+                // Let's use the new hitboxSize if available.
                 let projRect = CGRect(x: projX, y: projY, width: hitboxSize.width, height: hitboxSize.height)
                 
-                if projRect.intersects(enemySprite.node.frame) {
+                // Enemy Hitbox
+                var enemyRect = enemySprite.node.frame // Default fallback
+                
+                if let enemyEntity = enemy as? EnemyEntity {
+                    let eSize = enemyEntity.hitboxSize
+                     // Center it
+                    let eX = enemySprite.node.position.x - eSize.width / 2
+                    let eY = enemySprite.node.position.y - eSize.height / 2
+                    enemyRect = CGRect(x: eX, y: eY, width: eSize.width, height: eSize.height)
+                }
+                
+                if projRect.intersects(enemyRect) {
                     // Apply Damage via Manager (Handles visuals + death)
                     gameScene.gameManager.applyDamage(target: enemy, amount: damageComp.damageAmount)
                     
@@ -67,11 +80,25 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
             for enemy in enemies {
                 guard let enemySprite = enemy.component(ofType: SpriteComponent.self) else { continue }
                 
+                // Use Hitbox logic if possible, or simple distance? 
+                // Simple distance is consistently circular.
+                // If using hitboxSize, we should check intersection or adjust distance.
+                // Let's use distance but based on hitbox radius (approx width/2).
+                
+                var safeDist = contactDistance
+                if let enemyEntity = enemy as? EnemyEntity {
+                    // If hitbox is 50%, radius is roughly width/2 = 25% of visual.
+                    // Let's assume circular hitbox for player collision check
+                    safeDist = min(enemyEntity.hitboxSize.width, enemyEntity.hitboxSize.height) / 2.0
+                    // Add player radius? Player radius ~15 (30 diameter).
+                    safeDist += 15.0 
+                }
+                
                 let dx = playerSprite.node.position.x - enemySprite.node.position.x
                 let dy = playerSprite.node.position.y - enemySprite.node.position.y
                 let dist = hypot(dx, dy)
                 
-                if dist < contactDistance {
+                if dist < safeDist {
                     if !playerHealth.isInvulnerable {
                         let damage = enemy.component(ofType: AttackComponent.self)?.damage ?? 10
                         playerHealth.currentHealth -= damage
@@ -88,7 +115,6 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
         
         // Orb Collection (Magnet)
         let pickupRadius: CGFloat = 100.0
-        let collectionRadius: CGFloat = 20.0
         let magnetSpeed: CGFloat = 300.0
         
         for orb in orbs {
@@ -112,9 +138,30 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
             }
             
             // Collect
-            if dist < collectionRadius {
+            // User requested 50% of sprite size.
+            // visual size is 25x25 (from ExpOrbEntity).
+            // So hitboxSize = 12.5x12.5.
+            // Radius = ~6.25.
+            // Plus Player radius? 
+            // Usually collection is when they touch.
+            // Player radius ~15. 
+            // Distance < 15 + 6.25 = 21.25.
+            // Let's calculate it dynamically based on sprite size to be safe.
+            
+            // Assuming circular
+            var orbSize = CGSize(width: 25, height: 25) // Default fallback
+            if let spriteNode = orbSprite.node as? SKSpriteNode {
+                 orbSize = spriteNode.size
+            } else {
+                 orbSize = orbSprite.node.calculateAccumulatedFrame().size
+            }
+            
+            let orbRadius = (orbSize.width * 0.5) * 0.5 // 50% of visual radius
+            let collectionStartDist = orbRadius + 15.0 // + Player Radius
+            
+            if dist < collectionStartDist {
                 if let expComp = player.component(ofType: ExperienceComponent.self) {
-                    expComp.addExp(expValue.value)
+                     expComp.addExp(expValue.value)
                 }
                 gameScene.gameManager.remove(orb)
             }

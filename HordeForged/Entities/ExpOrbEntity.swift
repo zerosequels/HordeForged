@@ -17,7 +17,7 @@ class ExpOrbEntity: GKEntity {
         
         #if DEBUG
         if let spriteNode = spriteComponent.node as? SKSpriteNode {
-             let dCircle = SKShapeNode(circleOfRadius: spriteNode.size.width / 2) // Radius
+             let dCircle = SKShapeNode(circleOfRadius: (spriteNode.size.width * 0.5) / 2) // Radius = 50% of visual radius
              dCircle.strokeColor = .blue
              dCircle.lineWidth = 1.0
              dCircle.zPosition = 99
