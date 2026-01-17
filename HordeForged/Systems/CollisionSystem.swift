@@ -55,7 +55,12 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 
                 if projRect.intersects(enemyRect) {
                     // Apply Damage via Manager (Handles visuals + death)
-                    gameScene.gameManager.applyDamage(target: enemy, amount: damageComp.damageAmount)
+                    // Knockback: 250 for projectiles (User specified "small amount", but 250 with decay 5.0 is a sharp shove)
+                    let knockback: CGFloat = 250.0 
+                    // Projectile center for source
+                    let projCenter = CGPoint(x: projX + hitboxSize.width/2, y: projY + hitboxSize.height/2)
+                    
+                    gameScene.gameManager.applyDamage(target: enemy, amount: damageComp.damageAmount, sourcePosition: projCenter, knockbackPower: knockback)
                     
                     // Remove Projectile
                     gameScene.gameManager.remove(projectile)
@@ -101,7 +106,12 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
                 if dist < safeDist {
                     if !playerHealth.isInvulnerable {
                         let damage = enemy.component(ofType: AttackComponent.self)?.damage ?? 10
-                        playerHealth.currentHealth -= damage
+                        
+                        // Apply Damage with Recoil
+                        // Knockback player away from enemy
+                        // Power: 500 (Player collision should feel hefty)
+                        gameScene.gameManager.applyDamage(target: player, amount: damage, sourcePosition: enemySprite.node.position, knockbackPower: 500.0)
+                        
                         tookDamage = true
                     }
                     break

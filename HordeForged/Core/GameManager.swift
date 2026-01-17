@@ -111,21 +111,52 @@ public class GameManager {
         // InteractableSpawnSystem doesn't need component tracking, it just spawns.
     }
     
-    func applyDamage(target: GKEntity, amount: Int) {
+    func applyDamage(target: GKEntity, amount: Int, sourcePosition: CGPoint? = nil, knockbackPower: CGFloat = 0.0) {
         guard let healthComp = target.component(ofType: HealthComponent.self) else { return }
         
         // Apply Damage
         healthComp.currentHealth -= amount
         
-        // Show Visual Feedback
+        // Show Visual Feedback (TEXT)
         if let spriteComp = target.component(ofType: SpriteComponent.self),
            let gameScene = scene as? GameScene {
             gameScene.showDamage(amount: amount, position: spriteComp.node.position)
+            
+            // --- Hit Flash ---
+            // Colorize to white and back fast
+            let flashAction = SKAction.sequence([
+                SKAction.colorize(with: .white, colorBlendFactor: 1.0, duration: 0.05),
+                SKAction.wait(forDuration: 0.05),
+                SKAction.colorize(withColorBlendFactor: 0.0, duration: 0.05) // Return to original
+            ])
+            spriteComp.node.run(flashAction, withKey: "HitFlash") // Unique key overwrites previous flash
+            
+            // --- Recoil / Knockback ---
+            if let sourcePos = sourcePosition, knockbackPower > 0,
+               let moveComp = target.component(ofType: MovementComponent.self) {
+                
+                let dx = spriteComp.node.position.x - sourcePos.x
+                let dy = spriteComp.node.position.y - sourcePos.y
+                
+                // Normalize and Apply
+                let dist = hypot(dx, dy)
+                if dist > 0.001 {
+                    let ndx = dx / dist
+                    let ndy = dy / dist
+                    let impulse = CGVector(dx: ndx * knockbackPower, dy: ndy * knockbackPower)
+                    
+                    // Add to existing knockback (allows stacking) or set?
+                    // Setting feels cleaner for "last hit wins" impact.
+                    moveComp.knockbackVelocity = impulse
+                }
+            }
         }
         
         // Check for Death
         if healthComp.currentHealth <= 0 {
-            handleEnemyDeath(target)
+            if target is EnemyEntity || target is DestructibleEntity {
+                handleEnemyDeath(target)
+            }
         }
     }
 

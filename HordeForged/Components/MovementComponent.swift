@@ -19,6 +19,10 @@ class MovementComponent: GKComponent {
         dashDirection = direction.normalized()
     }
     
+    // Knockback
+    var knockbackVelocity: CGVector = .zero
+    let knockbackDecay: CGFloat = 5.0 // Damping factor (Drag)
+    
     // Updates the entity's position based on velocity * dt
     override func update(deltaTime seconds: TimeInterval) {
         super.update(deltaTime: seconds)
@@ -43,6 +47,35 @@ class MovementComponent: GKComponent {
             }
         }
         
+        // Handle Knockback
+        var knockbackMove: CGVector = .zero
+        if knockbackVelocity != .zero {
+            knockbackMove = knockbackVelocity * CGFloat(seconds)
+            
+            // Apply Drag/Decay
+            // Simple exponential decay: v = v * e^(-decay * dt) or linear friction
+            // Let's use linear friction-like reduction for stopping
+            let drag = knockbackDecay * CGFloat(seconds)
+            
+            // Reduce X
+            if knockbackVelocity.dx > 0 {
+                knockbackVelocity.dx = max(0, knockbackVelocity.dx - knockbackVelocity.dx * drag)
+            } else if knockbackVelocity.dx < 0 {
+                knockbackVelocity.dx = min(0, knockbackVelocity.dx - knockbackVelocity.dx * drag)
+            }
+            // Reduce Y
+            if knockbackVelocity.dy > 0 {
+                knockbackVelocity.dy = max(0, knockbackVelocity.dy - knockbackVelocity.dy * drag)
+            } else if knockbackVelocity.dy < 0 {
+                knockbackVelocity.dy = min(0, knockbackVelocity.dy - knockbackVelocity.dy * drag)
+            }
+            
+            // Snap to zero if very small
+            if abs(knockbackVelocity.dx) < 10 && abs(knockbackVelocity.dy) < 10 {
+                knockbackVelocity = .zero
+            }
+        }
+        
         
         // Check for Inventory Modifiers
         var currentSpeedModifier = speedModifier
@@ -51,8 +84,10 @@ class MovementComponent: GKComponent {
         }
         
         let amountToMove = velocity * movementSpeed * currentSpeedModifier * CGFloat(seconds)
-        let newPosition = CGPoint(x: spriteComponent.node.position.x + amountToMove.dx,
-                                  y: spriteComponent.node.position.y + amountToMove.dy)
+        let finalMove = CGVector(dx: amountToMove.dx + knockbackMove.dx, dy: amountToMove.dy + knockbackMove.dy)
+        
+        let newPosition = CGPoint(x: spriteComponent.node.position.x + finalMove.dx,
+                                  y: spriteComponent.node.position.y + finalMove.dy)
         
         spriteComponent.node.position = newPosition
         
