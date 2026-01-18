@@ -170,7 +170,7 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
                 // Range limit: 200 (Reduced from 400 as per request)
                 if dist < 200 && dist < minDist {
                     minDist = dist
-                    nearest = enemy
+                    nearest = target
                 }
             }
         }

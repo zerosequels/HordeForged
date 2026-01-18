@@ -1,5 +1,6 @@
 import SwiftUI
 import SpriteKit
+import Combine
 
 struct SurvivorSelectionView: View {
     @ObservedObject var appState: AppState
@@ -37,10 +38,11 @@ struct SurvivorSelectionView: View {
                             )
                         
                         // Survivor Image (Static for now, could be animated later)
-                        Image(appState.selectedSurvivor.assetPrefix + "_walk_down_0") // Assumes initial frame exists in assets
-                            .resizable()
-                            .interpolation(.none) // Pixel Art Style
-                            .aspectRatio(contentMode: .fit)
+                        // Survivor Image (Animated)
+                        AnimatedSurvivorView(
+                            survivor: appState.selectedSurvivor,
+                            isUnlocked: SaveLoadManager.shared.isSurvivorUnlocked(appState.selectedSurvivor)
+                        )
                             .frame(width: 120, height: 120)
                             .scaleEffect(1.5)
                         
@@ -167,5 +169,37 @@ struct SurvivorCard: View {
                 .frame(width: 80)
         }
         .scaleEffect(isSelected ? 1.1 : 1.0)
+    }
+}
+
+struct AnimatedSurvivorView: View {
+    let survivor: SurvivorType
+    let isUnlocked: Bool
+    @State private var frameIndex = 0
+    let timer = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
+    
+    var body: some View {
+        ZStack {
+            Image(survivor.assetPrefix + "_walk_down_\(frameIndex)")
+                .resizable()
+                .interpolation(.none)
+                .aspectRatio(contentMode: .fit)
+                .saturation(isUnlocked ? 1.0 : 0.0)
+                .opacity(isUnlocked ? 1.0 : 0.5)
+                .onReceive(timer) { _ in
+                    frameIndex = (frameIndex + 1) % 4
+                }
+                .onAppear {
+                    frameIndex = 0
+                }
+            
+            if !isUnlocked {
+                Image(systemName: "lock.fill")
+                    .resizable()
+                    .frame(width: 40, height: 52)
+                    .foregroundColor(.white)
+                    .shadow(color: .black, radius: 2)
+            }
+        }
     }
 }
