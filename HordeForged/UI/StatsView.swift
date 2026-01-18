@@ -53,98 +53,89 @@ struct StatsView: View {
                         
                         // Active Abilities
                         sectionHeader(title: "Active Abilities")
-                        ForEach(activeAbilities, id: \.definition.id) { ability in
-                            Button(action: {
-                                selectedAbility = ability
-                            }) {
-                                HStack {
-                                    // Ability Icon
-                                    Image(ability.definition.iconName)
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(Color.gray.opacity(0.3))
-                                        )
-                                        .cornerRadius(8)
-                                        .padding(.trailing, 8)
-                                    
-                                    Text(ability.definition.name)
-                                        .fontWeight(.bold)
-                                    Spacer()
-                                    Text("Level \(ability.level)")
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 15) {
+                                ForEach(activeAbilities, id: \.definition.id) { ability in
+                                    Button(action: {
+                                        selectedAbility = ability
+                                    }) {
+                                        ZStack(alignment: .bottomLeading) {
+                                            Image(ability.definition.iconName)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 60, height: 60)
+                                                .background(Color.gray.opacity(0.3))
+                                                .cornerRadius(10)
+                                                .clipped()
+                                            
+                                            // Level Indicator
+                                            Text("Lv \(ability.level)")
+                                                .font(.system(size: 12, weight: .bold))
+                                                .foregroundColor(.white)
+                                                .shadow(color: .black, radius: 1, x: 1, y: 1)
+                                                .padding([.bottom, .leading], 4)
+                                        }
+                                    }
                                 }
-                                .foregroundColor(.white)
-                                .padding(.horizontal)
-                                .contentShape(Rectangle())
                             }
+                            .padding(.horizontal)
                         }
                         
                         // Passive Abilities
                         sectionHeader(title: "Passive Abilities")
-                        ForEach(passiveAbilities, id: \.definition.id) { ability in
-                            Button(action: {
-                                selectedAbility = ability
-                            }) {
-                                HStack {
-                                    // Ability Icon
-                                    Image(ability.definition.iconName)
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(Color.gray.opacity(0.3))
-                                        )
-                                        .cornerRadius(8)
-                                        .padding(.trailing, 8)
-                                    
-                                    VStack(alignment: .leading) {
-                                        Text(ability.definition.name)
-                                        if let mod = ability.definition.modifiers.first {
-                                            // Calculate bonus: Value * Level * 100
-                                            let val = mod.value * Double(ability.level) * 100
-                                            let typeName = mod.type == .movementSpeed ? "Move Speed" : (mod.type == .damage ? "Damage" : "Stat")
-                                            Text("+\(String(format: "%.0f", val))% \(typeName)")
-                                                .font(.caption)
-                                                .foregroundColor(.gray)
-                                        }
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                            ForEach(passiveAbilities, id: \.definition.id) { ability in
+                                Button(action: {
+                                    selectedAbility = ability
+                                }) {
+                                    ZStack(alignment: .bottomLeading) {
+                                        Image(ability.definition.iconName)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 60, height: 60)
+                                            .background(Color.gray.opacity(0.3))
+                                            .cornerRadius(10)
+                                            .clipped()
+                                        
+                                            // Level Indicator
+                                            Text("Lv \(ability.level)")
+                                                .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.white)
+                                            .shadow(color: .black, radius: 1, x: 1, y: 1)
+                                            .padding([.bottom, .leading], 4)
                                     }
-                                    Spacer()
-                                    Text("Level \(ability.level)")
                                 }
-                                .foregroundColor(.white)
-                                .padding(.horizontal)
-                                .contentShape(Rectangle())
                             }
                         }
+                        .padding(.horizontal)
                         
                         // Items
                         sectionHeader(title: "Items")
-                        ForEach(Array(items.keys.sorted(by: { $0.name < $1.name })), id: \.id) { item in
-                            Button(action: {
-                                selectedItem = item
-                            }) {
-                                HStack {
-                                    // Item Icon
-                                    Image(item.iconName)
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(Color.gray.opacity(0.3))
-                                        )
-                                        .cornerRadius(8)
-                                        .padding(.trailing, 8)
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                            ForEach(Array(items.keys.sorted(by: { $0.name < $1.name })), id: \.id) { item in
+                                Button(action: {
+                                    selectedItem = item
+                                }) {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        Image(item.iconName)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 60, height: 60)
+                                            .background(Color.gray.opacity(0.3))
+                                            .cornerRadius(10)
+                                            .clipped()
                                         
-                                    Text(item.name)
-                                    Spacer()
-                                    Text("x\(items[item]!)")
+                                        // Count Indicator
+                                        Text("x\(items[item]!)")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.white)
+                                            .shadow(color: .black, radius: 1, x: 1, y: 1)
+                                            .padding([.bottom, .trailing], 4)
+                                    }
                                 }
-                                .foregroundColor(.white)
-                                .padding(.horizontal)
-                                .contentShape(Rectangle()) // Make full row tappable
                             }
                         }
+                        .padding(.horizontal)
                         
                         // Player Stats
                         sectionHeader(title: "Current Bonuses")
