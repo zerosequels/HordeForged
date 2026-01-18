@@ -16,6 +16,9 @@ class InventoryComponent: GKComponent {
     var movementSpeedMultiplier: Double = 1.0
     var damageMultiplier: Double = 1.0
     
+    // Skill Specific Stats
+    var barrierPerExp: Double = 0.0
+    
     override init() {
         super.init()
     }
@@ -80,6 +83,7 @@ class InventoryComponent: GKComponent {
         attackSpeedMultiplier = 1.0
         movementSpeedMultiplier = 1.0
         damageMultiplier = 1.0
+        barrierPerExp = 0.0
         
         for (item, count) in items {
             let stackCount = Double(count)
@@ -110,6 +114,8 @@ class InventoryComponent: GKComponent {
                 movementSpeedMultiplier += mod.value * stackCount
             case .damage:
                 damageMultiplier += mod.value * stackCount
+            case .barrierPerExp:
+                barrierPerExp += mod.value * stackCount
             default:
                 break
             }

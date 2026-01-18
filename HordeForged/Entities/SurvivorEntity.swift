@@ -17,15 +17,15 @@ class SurvivorEntity: GKEntity {
     #endif
     
     // Default to paladin for now, but allow passing others
-    init(characterName: String = "survivor_paladin") {
+    init(definition: SurvivorDefinition) {
         // Init Components first
         // Construct initial frame name: survivor_paladin_walk_down_0
-        let initialImage = "\(characterName)_walk_down_0"
+        let initialImage = "\(definition.characterName)_walk_down_0"
         let texture = SKTexture(imageNamed: initialImage)
         
         self.spriteComponent = SpriteComponent(texture: texture)
         // Atlas 'survivor_atlas', Base Name = characterName (e.g. 'survivor_paladin')
-        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: characterName)
+        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: definition.characterName)
         
         self.movementComponent = MovementComponent()
         self.healthComponent = HealthComponent(maxHealth: 50)
@@ -44,9 +44,18 @@ class SurvivorEntity: GKEntity {
         addComponent(staminaComponent)
         
         let inventory = InventoryComponent()
-        // Default Ability: Arcane Bolt
-        inventory.addAbility(ArcaneBolt)
+        // Add Starting Skills
+        inventory.addAbility(definition.startingActiveSkill)
+        inventory.addAbility(definition.startingPassiveSkill)
         addComponent(inventory)
+    }
+    
+    // Convenience init for legacy string support (maps to Paladin default or basic lookup)
+    convenience init(characterName: String = "survivor_paladin") {
+        // Simple fallback map for now, or just default to Paladin
+        // Ideally we check definitions
+        let def = AllSurvivors.first(where: { $0.characterName == characterName }) ?? PaladinSurvivor
+        self.init(definition: def)
     }
     
     // For shape-based placeholder (useful if assets are missing)

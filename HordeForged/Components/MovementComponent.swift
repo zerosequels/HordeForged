@@ -22,6 +22,8 @@ class MovementComponent: GKComponent {
     // Knockback
     var knockbackVelocity: CGVector = .zero
     let knockbackDecay: CGFloat = 5.0 // Damping factor (Drag)
+    var knockbackResistance: CGFloat = 0.0 // 0.0 = full knockback, 1.0 = immune
+    
     
     // Updates the entity's position based on velocity * dt
     override func update(deltaTime seconds: TimeInterval) {

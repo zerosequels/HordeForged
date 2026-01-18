@@ -44,6 +44,10 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         // In a real engine, ability logic might be attached to the definition or a script.
         // Here we switch on ID.
         
+        if let gameScene = scene as? GameScene, gameScene.gameManager.debugSkills {
+            print("[Skill] Activated \(ability.definition.name) (Lv \(ability.level))")
+        }
+        
         guard let spriteComponent = source.component(ofType: SpriteComponent.self) else { return }
         let position = spriteComponent.node.position
         
@@ -64,6 +68,12 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
             // Level 1 = 30, Level 10 = 120
             let baseDamage = 20.0 + (Double(ability.level) * 10.0)
             triggerRadialBlast(at: position, damage: baseDamage * damageMult)
+            
+        case "smite":
+            // Smite Logic: Lightning on nearest enemy
+            // Damage: Base 15 + 8/lvl
+            let baseDamage = 15.0 + (Double(ability.level) * 8.0)
+            triggerSmite(from: source, damage: baseDamage * damageMult)
             
         default:
             print("Unknown ability activated: \(ability.definition.name)")
@@ -140,6 +150,69 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         
         if let gameScene = scene as? GameScene {
             gameScene.gameManager.add(projectile)
+        }
+    }
+    
+    func triggerSmite(from source: GKEntity, damage: Double) {
+        guard let gameScene = scene as? GameScene,
+              let sourceSprite = source.component(ofType: SpriteComponent.self) else { return }
+        
+        let sourcePos = sourceSprite.node.position
+        
+        // Find nearest target (Enemy OR Destructible)
+        let potentialTargets = gameScene.gameManager.entities.filter { $0 is EnemyEntity || $0 is DestructibleEntity }
+        var nearest: GKEntity?
+        var minDist: CGFloat = CGFloat.greatestFiniteMagnitude
+        
+        for target in potentialTargets {
+            if let sprite = target.component(ofType: SpriteComponent.self) {
+                let dist = hypot(sprite.node.position.x - sourcePos.x, sprite.node.position.y - sourcePos.y)
+                // Range limit: 200 (Reduced from 400 as per request)
+                if dist < 200 && dist < minDist {
+                    minDist = dist
+                    nearest = enemy
+                }
+            }
+        }
+        
+        if let target = nearest,
+           let targetSprite = target.component(ofType: SpriteComponent.self) {
+            
+            let targetPos = targetSprite.node.position
+            
+            // Visual: Lightning Bolt (Simple Line + Flash)
+            if gameScene.gameManager.debugSkills {
+                 print("[Skill] Smite: Striking target at \(targetPos) with \(damage) damage")
+            }
+            
+            let bolt = SKShapeNode()
+            let path = CGMutablePath()
+            path.move(to: CGPoint(x: targetPos.x, y: targetPos.y + 300)) // Start from sky
+            path.addLine(to: targetPos)
+            bolt.path = path
+            bolt.strokeColor = .cyan
+            bolt.lineWidth = 5
+            bolt.glowWidth = 5
+            scene.addChild(bolt)
+            
+            bolt.run(SKAction.sequence([
+                SKAction.wait(forDuration: 0.1),
+                SKAction.fadeOut(withDuration: 0.1),
+                SKAction.removeFromParent()
+            ]))
+            
+            // Damage + AOE
+            // AOE Radius 50
+            let aoeTargets = potentialTargets.filter {
+                if let s = $0.component(ofType: SpriteComponent.self) {
+                   return hypot(s.node.position.x - targetPos.x, s.node.position.y - targetPos.y) < 50
+                }
+                return false
+            }
+            
+            for hit in aoeTargets {
+                gameScene.gameManager.applyDamage(target: hit, amount: Int(damage), sourcePosition: targetPos, knockbackPower: 0) // No knockback on Smite? Or minimal?
+            }
         }
     }
 }

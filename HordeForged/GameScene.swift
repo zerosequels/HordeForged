@@ -21,10 +21,12 @@ class GameScene: SKScene {
     
     // Debug Visualization
     private var pickupRadiusNode: SKShapeNode?
+    private var smiteRangeNode: SKShapeNode?
     
     // UI
     private var healthBarBackground: SKShapeNode?
     private var healthBar: SKShapeNode?
+    private var barrierBar: SKShapeNode?
     private var healthLabel: SKLabelNode?
     
     private var expBarBackground: SKShapeNode?
@@ -82,6 +84,15 @@ class GameScene: SKScene {
         bar.zPosition = 101
         cameraNode.addChild(bar)
         self.healthBar = bar
+        
+        // Setup Barrier Bar (Overlay)
+        let barrierBar = SKShapeNode(rect: CGRect(origin: barOrigin, size: barSize), cornerRadius: 5)
+        barrierBar.fillColor = .cyan
+        barrierBar.strokeColor = .clear
+        barrierBar.alpha = 0.7
+        barrierBar.zPosition = 102
+        cameraNode.addChild(barrierBar)
+        self.barrierBar = barrierBar
         
         // Setup Health Label
         let hLabel = SKLabelNode(fontNamed: "Arial-BoldMT")
@@ -155,6 +166,16 @@ class GameScene: SKScene {
         addChild(radiusNode)
         self.pickupRadiusNode = radiusNode
         
+        // Setup Smite Range Debug
+        let smiteRange: CGFloat = 200.0
+        let sNode = SKShapeNode(circleOfRadius: smiteRange)
+        sNode.strokeColor = .cyan
+        sNode.lineWidth = 1
+        sNode.alpha = 0.3
+        sNode.isHidden = true // Default hidden, shown if debugSkills is on
+        addChild(sNode)
+        self.smiteRangeNode = sNode
+        
         setupGame()
     }
     
@@ -212,6 +233,7 @@ class GameScene: SKScene {
         
         healthBarBackground?.position = CGPoint(x: xOffset, y: topMargin)
         healthBar?.position = CGPoint(x: xOffset, y: topMargin)
+        barrierBar?.position = CGPoint(x: xOffset, y: topMargin) // Base position, will offset in update
         healthLabel?.position = CGPoint(x: xOffset, y: topMargin - 5)
         
         // Stamina Below Health
@@ -345,6 +367,10 @@ class GameScene: SKScene {
             
             // Update Debug Radius Position
             pickupRadiusNode?.position = sprite.node.position
+            
+            // Update Smite Debug
+            smiteRangeNode?.position = sprite.node.position
+            smiteRangeNode?.isHidden = !gameManager.debugSkills
         }
 
         gameManager.update(deltaTime)
@@ -373,8 +399,21 @@ class GameScene: SKScene {
                 healthBar?.fillColor = .green
             }
             
+            // Barrier Update
+            // User requested overlay behavior (like Risk of Rain 2).
+            // Barrier draws ON TOP of health bar, anchored left.
+            let barrierRatio = CGFloat(healthComp.barrier) / CGFloat(healthComp.maxHealth)
+            let clampedBarrier = max(0, min(1.0, barrierRatio)) 
+            barrierBar?.xScale = clampedBarrier
+            
+            // Position Barrier at same origin as Health Bar (Overlay)
+            if let basePos = healthBarBackground?.position {
+                barrierBar?.position = basePos
+            }
+            
             // Text Update
-            healthLabel?.text = "\(healthComp.currentHealth) / \(healthComp.maxHealth)"
+            let barrierText = healthComp.barrier > 0 ? " + \(Int(healthComp.barrier))" : ""
+            healthLabel?.text = "\(healthComp.currentHealth)\(barrierText) / \(healthComp.maxHealth)"
         }
         
         // Update Stamina UI

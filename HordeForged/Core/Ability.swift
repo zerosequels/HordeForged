@@ -21,12 +21,13 @@ struct AbilityDefinition: Hashable {
     let type: AbilityType
     let rarity: AbilityRarity
     let maxLevel: Int
-    let modifiers: [StatModifier] // New: For Passive Skills
+    let modifiers: [StatModifier]
+    let baseCooldown: TimeInterval // Added
     
     // Base stats or logic identifier could go here
     // For MVP, we might hardcode logic based on ID
     
-    init(id: String, name: String, description: String, iconName: String, projectileName: String? = nil, projectileRotationOffset: CGFloat = 0, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = []) {
+    init(id: String, name: String, description: String, iconName: String, projectileName: String? = nil, projectileRotationOffset: CGFloat = 0, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = [], baseCooldown: TimeInterval = 1.0) {
         self.id = id
         self.name = name
         self.description = description
@@ -37,6 +38,7 @@ struct AbilityDefinition: Hashable {
         self.rarity = rarity
         self.maxLevel = maxLevel
         self.modifiers = modifiers
+        self.baseCooldown = baseCooldown
     }
 }
 
@@ -44,10 +46,11 @@ class AbilityInstance {
     let definition: AbilityDefinition
     var level: Int = 1
     var cooldownTimer: TimeInterval = 0
-    var baseCooldown: TimeInterval = 1.0 // Default
+    var baseCooldown: TimeInterval
     
     init(definition: AbilityDefinition) {
         self.definition = definition
+        self.baseCooldown = definition.baseCooldown
     }
     
     func upgrade() {

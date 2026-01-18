@@ -59,6 +59,19 @@ class EnemyEntity: GKEntity {
         // Movement
         let movementComponent = MovementComponent()
         movementComponent.movementSpeed = stats.speed // Set initial speed from stats
+        
+        // Knockback Resistance Settings
+        switch type {
+        case .boss:
+            movementComponent.knockbackResistance = 1.0 // Immune
+        case .brute:
+            movementComponent.knockbackResistance = 0.8 // High resistance
+        case .elite:
+            movementComponent.knockbackResistance = 0.5 // Medium resistance
+        default:
+            movementComponent.knockbackResistance = 0.0 // Full knockback
+        }
+        
         addComponent(movementComponent)
         
         // Attack

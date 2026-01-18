@@ -172,6 +172,17 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
             if dist < collectionStartDist {
                 if let expComp = player.component(ofType: ExperienceComponent.self) {
                      expComp.addExp(expValue.value)
+                     
+                     // Helper: Add Barrier if applicable
+                     if let inv = player.component(ofType: InventoryComponent.self), inv.barrierPerExp > 0 {
+                         let barrierAmt = inv.barrierPerExp * Double(expValue.value)
+                         if let health = player.component(ofType: HealthComponent.self) {
+                             health.barrier = min(health.maxBarrier, health.barrier + barrierAmt)
+                             if gameScene.gameManager.debugSkills {
+                                 print("[Skill] ManaShield: Added \(barrierAmt) Barrier. Current: \(health.barrier)")
+                             }
+                         }
+                     }
                 }
                 gameScene.gameManager.remove(orb)
             }
@@ -213,6 +224,34 @@ class CollisionSystem: GKComponentSystem<GKComponent> {
             }
         }
 
+        // 3a) Player vs Destructible (Collision -> Destroy)
+        guard let player = entities.first(where: { $0 is SurvivorEntity }) else { return }
+        
+        for pot in destructibles {
+            guard let potSprite = pot.component(ofType: SpriteComponent.self),
+                  let healthComp = pot.component(ofType: HealthComponent.self) else { continue }
+            
+             // Calculate Hitbox
+             let hitboxSize = (pot as? DestructibleEntity)?.hitboxSize ?? potSprite.node.calculateAccumulatedFrame().size
+             let potX = potSprite.node.position.x - hitboxSize.width / 2
+             let potY = potSprite.node.position.y - hitboxSize.height / 2
+             let potRect = CGRect(x: potX, y: potY, width: hitboxSize.width, height: hitboxSize.height)
+            
+             // Intersect with Player
+             if let playerSprite = player.component(ofType: SpriteComponent.self) {
+                 if potRect.intersects(playerSprite.node.frame) {
+                    // Destroy!
+                    healthComp.currentHealth = 0
+                    
+                    // Trigger Break Visual/Loot
+                    if let lootComp = pot.component(ofType: LootComponent.self) {
+                        self.spawnLoot(from: lootComp, position: potSprite.node.position, gameScene: gameScene)
+                    }
+                    gameScene.gameManager.remove(pot)
+                 }
+             }
+        }
+        
         // 4) Player vs Hazard
         guard let player = entities.first(where: { $0 is SurvivorEntity }),
               let playerSprite = player.component(ofType: SpriteComponent.self),

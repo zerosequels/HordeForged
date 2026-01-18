@@ -3,6 +3,8 @@ import SpriteKit
 
 public class GameManager {
     var entities = Set<GKEntity>()
+    public var debugSkills: Bool = true // User requested logging
+    
     
     // Component systems to update components in a deterministic order
     lazy var componentSystems: [GKComponentSystem] = {
@@ -115,7 +117,21 @@ public class GameManager {
         guard let healthComp = target.component(ofType: HealthComponent.self) else { return }
         
         // Apply Damage
-        healthComp.currentHealth -= amount
+        var damageRemaining = Double(amount)
+        
+        if healthComp.barrier > 0 {
+            if healthComp.barrier >= damageRemaining {
+                healthComp.barrier -= damageRemaining
+                damageRemaining = 0
+            } else {
+                damageRemaining -= healthComp.barrier
+                healthComp.barrier = 0
+            }
+        }
+        
+        if damageRemaining > 0 {
+            healthComp.currentHealth -= Int(damageRemaining)
+        }
         
         // Show Visual Feedback (TEXT)
         if let spriteComp = target.component(ofType: SpriteComponent.self),
@@ -143,7 +159,12 @@ public class GameManager {
                 if dist > 0.001 {
                     let ndx = dx / dist
                     let ndy = dy / dist
-                    let impulse = CGVector(dx: ndx * knockbackPower, dy: ndy * knockbackPower)
+                    
+                    // Apply Resistance
+                    let resistance = moveComp.knockbackResistance
+                    let effectivePower = knockbackPower * (1.0 - resistance)
+                    
+                    let impulse = CGVector(dx: ndx * effectivePower, dy: ndy * effectivePower)
                     
                     // Add to existing knockback (allows stacking) or set?
                     // Setting feels cleaner for "last hit wins" impact.

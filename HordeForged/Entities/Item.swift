@@ -10,6 +10,7 @@ enum StatType: Hashable {
     case attackSpeed
     case movementSpeed
     case damage
+    case barrierPerExp
     case health
     case critChance
 }
