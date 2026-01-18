@@ -7,5 +7,6 @@ let Thunderclap = AbilityDefinition(
     iconName: "thunderclap",
     type: .active,
     rarity: .rare,
-    maxLevel: 10
+    maxLevel: 10,
+    baseCooldown: 5.0
 )

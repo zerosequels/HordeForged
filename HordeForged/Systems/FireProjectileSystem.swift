@@ -81,36 +81,67 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
     }
     
     func triggerRadialBlast(at position: CGPoint, damage: Double) {
-        // Visual
-        let blast = SKShapeNode(circleOfRadius: 100)
-        blast.position = position
-        blast.strokeColor = .orange
-        blast.lineWidth = 2
-        scene.addChild(blast)
         
-        blast.run(SKAction.sequence([
-            SKAction.scale(to: 1.5, duration: 0.2),
-            SKAction.fadeOut(withDuration: 0.2),
-            SKAction.removeFromParent()
-        ]))
-        
-        // Logic: Find enemies in range and damage
-        // We need access to enemies. Currently stored in GameManager.
-        if let gameScene = scene as? GameScene {
-             let targets = gameScene.gameManager.entities.filter { $0 is EnemyEntity || $0 is DestructibleEntity }
-             for target in targets {
-                 if let targetSprite = target.component(ofType: SpriteComponent.self),
-                    let healthCheck = target.component(ofType: HealthComponent.self) {
-                     let dist = hypot(targetSprite.node.position.x - position.x, targetSprite.node.position.y - position.y)
-                     if dist < 150 { // Range
-                         // Radial Knockback
-                         gameScene.gameManager.applyDamage(target: target, amount: Int(damage), sourcePosition: position, knockbackPower: 400.0)
-                         // Optional: Knockback?
-                     }
-                 }
-             }
+        let timePerFrame = 1.0 / 24.0
+        // Load textures for animation
+        var textures: [SKTexture] = []
+        for i in 0...15 {
+            textures.append(SKTexture(imageNamed: "Projectiles/projectile_thunderclap_\(i)"))
         }
+        let totalDuration = Double(textures.count) * timePerFrame
         
+        // Create Entity
+        let blastEntity = GKEntity()
+        
+        // 1. Visuals
+        let blastNode = SKSpriteNode(texture: textures.first)
+        blastNode.position = position
+        blastNode.zPosition = 100
+        blastNode.setScale(0.1) // Start small
+        // blastNode.colorBlendFactor = 0 // Ensure original colors
+        
+        // Animation Actions
+        let animation = SKAction.animate(with: textures, timePerFrame: timePerFrame)
+        let scaleUp = SKAction.scale(to: 3.5, duration: totalDuration)
+        let group = SKAction.group([animation, scaleUp])
+        // We let BlastSystem handle removal, but adding this doesn't hurt visually
+        blastNode.run(group)
+        
+        let spriteComp = SpriteComponent(texture: textures.first!)
+        // Swap the node created by component with our configured one? 
+        // Or just configure the component's node. 
+        // SpriteComponent often creates a node. Let's use the component's node logic if we can, or just force ours.
+        // Assuming SpriteComponent takes a texture and makes a node.
+        if let node = spriteComp.node as? SKSpriteNode {
+            node.texture = textures.first
+            node.position = position
+            node.zPosition = 100
+            node.setScale(0.1)
+            node.run(group)
+        }
+        blastEntity.addComponent(spriteComp)
+        
+        // 2. Logic (BlastComponent)
+        // Max Radius? Visual scale 3.5. 
+        // Base size of texture? 
+        // Assuming 96x96 (standard projectile) or similar. 
+        // If 100x100, scale 3.5 = 350 size -> 175 radius.
+        // Let's estimate 150-180.
+        let maxRadius: CGFloat = 175.0
+        
+        let blastComp = BlastComponent(
+            center: position,
+            maxRadius: maxRadius,
+            duration: totalDuration,
+            baseDamage: damage, // Use passed damage
+            maxKnockback: 400.0 // User requested variable knockback, component handles it relative to max.
+        )
+        blastEntity.addComponent(blastComp)
+        
+        // 3. Add to Manager
+        if let gameScene = scene as? GameScene {
+            gameScene.gameManager.add(blastEntity)
+        }
     }
     
     func fireProjectile(from source: GKEntity? = nil, damage: Double = 10, textureName: String? = nil, rotationOffset: CGFloat = 0) { 

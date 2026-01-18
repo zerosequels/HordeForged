@@ -30,6 +30,8 @@ public class GameManager {
     var indicatorSystem: IndicatorSystem!
     var interactionSystem: InteractionSystem!
     var interactableSpawnSystem: InteractableSpawnSystem!
+    var blastSystem: BlastSystem!
+
     
     lazy var enemySpawnSystem: EnemySpawnSystem = {
         return EnemySpawnSystem(scene: self.scene!, gameManager: self)
@@ -63,6 +65,8 @@ public class GameManager {
         self.interactionSystem = InteractionSystem()
         self.interactionSystem.scene = scene
         self.interactableSpawnSystem = InteractableSpawnSystem(scene: scene, gameManager: self)
+        self.blastSystem = BlastSystem(scene: scene)
+
         
         NotificationCenter.default.addObserver(self, selector: #selector(onStageChanged), name: NSNotification.Name("StageChanged"), object: nil)
     }
@@ -111,6 +115,9 @@ public class GameManager {
         indicatorSystem.addComponent(foundIn: entity)
         interactionSystem.addComponent(foundIn: entity)
         // InteractableSpawnSystem doesn't need component tracking, it just spawns.
+        // BlastSystem
+        blastSystem.addComponent(foundIn: entity)
+
     }
     
     func applyDamage(target: GKEntity, amount: Int, sourcePosition: CGPoint? = nil, knockbackPower: CGFloat = 0.0) {
@@ -209,6 +216,8 @@ public class GameManager {
         enemyMovementSystem.removeComponent(foundIn: entity)
         indicatorSystem.removeComponent(foundIn: entity)
         interactionSystem.removeComponent(foundIn: entity)
+        blastSystem.removeComponent(foundIn: entity)
+
     }
     
     func update(_ deltaTime: TimeInterval) {
@@ -240,6 +249,10 @@ public class GameManager {
         
         // Interactables
         interactableSpawnSystem.update(deltaTime: deltaTime)
+        
+        // Blast Logic
+        blastSystem.update(deltaTime: deltaTime)
+
         
         // Update Entities (for SurvivorEntity logic etc)
         for entity in entities {
