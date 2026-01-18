@@ -1,29 +1,37 @@
 import Foundation
 
-enum UnlockCondition {
+public enum UnlockCondition {
     case `default`
     case achievement(id: String)
     case premium // e.g. IAP
 }
 
-struct SkinDefinition {
-    let id: String
-    let name: String // Display Name
-    let characterName: String // Asset Base Name
-    let description: String
-    let unlockCondition: UnlockCondition
+public struct SkinDefinition {
+    public let id: String
+    public let name: String // Display Name
+    public let characterName: String // Asset Base Name
+    public let description: String
+    public let unlockCondition: UnlockCondition
+    
+    public init(id: String, name: String, characterName: String, description: String, unlockCondition: UnlockCondition) {
+        self.id = id
+        self.name = name
+        self.characterName = characterName
+        self.description = description
+        self.unlockCondition = unlockCondition
+    }
 }
 
-struct SurvivorDefinition {
-    let id: String
-    let name: String
-    let description: String
-    let characterName: String // Default Asset Base Name
-    let startingActiveSkill: AbilityDefinition
-    let startingPassiveSkill: AbilityDefinition
-    let skins: [SkinDefinition]
+public struct SurvivorDefinition {
+    public let id: String
+    public let name: String
+    public let description: String
+    public let characterName: String // Default Asset Base Name
+    public let startingActiveSkill: AbilityDefinition
+    public let startingPassiveSkill: AbilityDefinition
+    public let skins: [SkinDefinition]
     
-    init(id: String, name: String, description: String, characterName: String, startingActiveSkill: AbilityDefinition, startingPassiveSkill: AbilityDefinition, skins: [SkinDefinition] = []) {
+    public init(id: String, name: String, description: String, characterName: String, startingActiveSkill: AbilityDefinition, startingPassiveSkill: AbilityDefinition, skins: [SkinDefinition] = []) {
         self.id = id
         self.name = name
         self.description = description

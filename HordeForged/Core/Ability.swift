@@ -1,33 +1,33 @@
 import Foundation
 
-enum AbilityType {
+public enum AbilityType {
     case active
     case passive
 }
 
-enum AbilityRarity {
+public enum AbilityRarity {
     case common
     case rare
     case legendary
 }
 
-struct AbilityDefinition: Hashable {
-    let id: String
-    let name: String
-    let description: String
-    let iconName: String
-    let projectileName: String?
-    let projectileRotationOffset: CGFloat // Radians
-    let type: AbilityType
-    let rarity: AbilityRarity
-    let maxLevel: Int
-    let modifiers: [StatModifier]
-    let baseCooldown: TimeInterval // Added
+public struct AbilityDefinition: Hashable {
+    public let id: String
+    public let name: String
+    public let description: String
+    public let iconName: String
+    public let projectileName: String?
+    public let projectileRotationOffset: CGFloat // Radians
+    public let type: AbilityType
+    public let rarity: AbilityRarity
+    public let maxLevel: Int
+    public let modifiers: [StatModifier]
+    public let baseCooldown: TimeInterval // Added
     
     // Base stats or logic identifier could go here
     // For MVP, we might hardcode logic based on ID
     
-    init(id: String, name: String, description: String, iconName: String, projectileName: String? = nil, projectileRotationOffset: CGFloat = 0, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = [], baseCooldown: TimeInterval = 1.0) {
+    public init(id: String, name: String, description: String, iconName: String, projectileName: String? = nil, projectileRotationOffset: CGFloat = 0, type: AbilityType, rarity: AbilityRarity, maxLevel: Int, modifiers: [StatModifier] = [], baseCooldown: TimeInterval = 1.0) {
         self.id = id
         self.name = name
         self.description = description

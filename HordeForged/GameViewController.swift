@@ -5,12 +5,15 @@ import GameplayKit
 
 // MARK: - GameViewController
 
+// MARK: - GameViewController
+
 class GameViewController: UIViewController {
     
     var skView: SKView!
     var hostingController: UIViewController?
     
     var selectedSurvivor: SurvivorType = .paladin
+    var selectedSkin: SkinDefinition? // New property
     var onGameEnd: (() -> Void)?
     
     override func viewDidLoad() {
@@ -31,8 +34,9 @@ class GameViewController: UIViewController {
         // Present the GameScene
         let scene = GameScene(size: view.bounds.size)
         // Pass survivor name to simple Property or Setup method later
-        // But better to have custom init or configure
-        scene.selectedSurvivorName = selectedSurvivor.assetPrefix
+        // Use skin asset name if available
+        let assetName = selectedSkin?.characterName ?? selectedSurvivor.assetPrefix
+        scene.selectedSurvivorName = assetName
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
         
@@ -139,6 +143,11 @@ class GameViewController: UIViewController {
             // Restart Scene
              let scene = GameScene(size: self.view.bounds.size)
              scene.scaleMode = .resizeFill
+            
+            // Ensure correct skin is used on restart
+            let assetName = self.selectedSkin?.characterName ?? self.selectedSurvivor.assetPrefix
+            scene.selectedSurvivorName = assetName
+            
              self.skView.presentScene(scene)
              self.skView.isPaused = false
         })
@@ -247,16 +256,19 @@ class GameViewController: UIViewController {
 
 struct GameViewRepresentable: UIViewControllerRepresentable {
     let selectedSurvivor: SurvivorType
+    let selectedSkin: SkinDefinition? // New dependency
     let onGameOver: () -> Void
     
     func makeUIViewController(context: Context) -> GameViewController {
         let vc = GameViewController()
         vc.selectedSurvivor = selectedSurvivor
+        vc.selectedSkin = selectedSkin
         vc.onGameEnd = onGameOver
         return vc
     }
 
     func updateUIViewController(_ uiViewController: GameViewController, context: Context) {
         // Update the view controller if needed
+        // Usually, restart is handled by recreating the view, so update might not need extensive logic for one-shot game session
     }
 }

@@ -17,11 +17,12 @@ extension Color {
 
 struct MainGameView: View {
     let selectedSurvivor: SurvivorType
+    let selectedSkin: SkinDefinition?
     let onGameOver: () -> Void
     
     var body: some View {
         ZStack {
-            GameViewRepresentable(selectedSurvivor: selectedSurvivor, onGameOver: onGameOver)
+            GameViewRepresentable(selectedSurvivor: selectedSurvivor, selectedSkin: selectedSkin, onGameOver: onGameOver)
                 .ignoresSafeArea()
         }
     }
@@ -36,7 +37,7 @@ struct ContentView: View {
             case .selection:
                 SurvivorSelectionView(appState: appState)
             case .game:
-                MainGameView(selectedSurvivor: appState.selectedSurvivor) {
+                MainGameView(selectedSurvivor: appState.selectedSurvivor, selectedSkin: appState.selectedSkin) {
                     // On Game Over (or return to menu)
                     withAnimation {
                         appState.currentScreen = .selection

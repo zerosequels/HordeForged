@@ -11,38 +11,55 @@ public enum SurvivorType: String, CaseIterable, Identifiable, Codable {
     case herald
     case hermit
     case hydromancer
-    case iron_golem
+    // case iron_golem // Removed (Skin)
     case pyromancer
     case red_wizard
     case samurai
     case sorcerer
     case spellblade
-    case stone_golem
+    // case stone_golem // Removed (Skin)
     case terramancer
     
     public var id: String { rawValue }
     
-    public var displayName: String {
+    public var definition: SurvivorDefinition {
         switch self {
-        case .blackswordsman: return "Black Swordsman"
-        case .red_wizard: return "Red Wizard"
-        case .iron_golem: return "Iron Golem"
-        case .stone_golem: return "Stone Golem"
-        default:
-            return rawValue.capitalized
+        case .paladin: return PaladinSurvivor
+        case .aeromancer: return AeromancerSurvivor
+        case .blackswordsman: return BlackSwordsmanSurvivor
+        case .cleric: return ClericSurvivor
+        case .dracula: return DraculaSurvivor
+        case .druid: return DruidSurvivor
+        case .golem: return GolemSurvivor
+        case .herald: return HeraldSurvivor
+        case .hermit: return HermitSurvivor
+        case .hydromancer: return HydromancerSurvivor
+        case .pyromancer: return PyromancerSurvivor
+        case .red_wizard: return RedWizardSurvivor
+        case .samurai: return SamuraiSurvivor
+        case .sorcerer: return SorcererSurvivor
+        case .spellblade: return SpellbladeSurvivor
+        case .terramancer: return TerramancerSurvivor
         }
     }
     
+    public var displayName: String {
+        return definition.name
+    }
+    
     public var assetPrefix: String {
-        return "survivor_\(rawValue)"
+        // Default to definition's character name
+        return definition.characterName
     }
     
     public var isUnlockedByDefault: Bool {
+        // Use logic or definition defaults?
+        // Staying strict to prior logic for now but using definition data would be better long term
         switch self {
         case .paladin, .red_wizard, .cleric:
             return true
         default:
-            return false
+            return false // Golem, etc unlockable
         }
     }
     
@@ -61,6 +78,6 @@ public enum SurvivorType: String, CaseIterable, Identifiable, Codable {
         .druid, .sorcerer, .hermit, .herald, .dracula,
         
         // Constructs
-        .golem, .stone_golem, .iron_golem
+        .golem
     ]
 }

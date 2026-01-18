@@ -5,6 +5,21 @@ import Combine
 struct SurvivorSelectionView: View {
     @ObservedObject var appState: AppState
     
+    var selectedDefinition: SurvivorDefinition {
+        appState.selectedSurvivor.definition
+    }
+    
+    var currentSkin: SkinDefinition? {
+        appState.selectedSkin
+    }
+    
+    var displaySkinName: String {
+        if let skin = currentSkin {
+            return skin.name
+        }
+        return selectedDefinition.name
+    }
+    
     // Grid Setup
     let columns = [
         GridItem(.adaptive(minimum: 80))
@@ -37,10 +52,10 @@ struct SurvivorSelectionView: View {
                                     .stroke(Color.hordeGold, lineWidth: 2)
                             )
                         
-                        // Survivor Image (Static for now, could be animated later)
                         // Survivor Image (Animated)
                         AnimatedSurvivorView(
                             survivor: appState.selectedSurvivor,
+                            skin: appState.selectedSkin,
                             isUnlocked: SaveLoadManager.shared.isSurvivorUnlocked(appState.selectedSurvivor)
                         )
                             .frame(width: 120, height: 120)
@@ -49,10 +64,28 @@ struct SurvivorSelectionView: View {
                         // Name Label
                         VStack {
                             Spacer()
-                            Text(appState.selectedSurvivor.displayName)
+                            Text(displaySkinName)
                                 .font(.custom("Arial-BoldMT", size: 24))
                                 .foregroundColor(.white)
                                 .padding(.bottom, 10)
+                        }
+                        
+                        // Skin Selector Arrows (If skins exist)
+                        if !selectedDefinition.skins.isEmpty {
+                            HStack {
+                                Button(action: previousSkin) {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(.white)
+                                        .padding()
+                                }
+                                Spacer()
+                                Button(action: nextSkin) {
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.white)
+                                        .padding()
+                                }
+                            }
+                            .frame(width: 200)
                         }
                     }
                     
@@ -69,7 +102,10 @@ struct SurvivorSelectionView: View {
                         .background(Color.black.opacity(0.5))
                         .cornerRadius(10)
                     } else {
-                        // Maybe show stats here later?
+                        // Check Skin Lock Status (if applicable)
+                        // For MVP, assuming skins are unlocked or handled by Survivor lock
+                        // The 'isUnlocked' currently checks survivor level. Skin level lock logic to come.
+                        
                         Text("Ready to Deploy")
                             .font(.subheadline)
                             .foregroundColor(.green)
@@ -78,7 +114,6 @@ struct SurvivorSelectionView: View {
                 }
                 
                 Spacer()
-                
                 // Survivor List
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 15) {
@@ -89,6 +124,8 @@ struct SurvivorSelectionView: View {
                                 .onTapGesture {
                                     withAnimation(.spring()) {
                                         appState.selectedSurvivor = survivor
+                                        // Reset skin on change
+                                        appState.selectedSkin = survivor.definition.skins.first
                                     }
                                 }
                         }
@@ -122,6 +159,30 @@ struct SurvivorSelectionView: View {
                 .padding(.bottom, 40)
                 .shadow(radius: 5)
             }
+        }
+    }
+    
+    func nextSkin() {
+        let skins = selectedDefinition.skins
+        guard !skins.isEmpty else { return }
+        
+        if let current = currentSkin, let index = skins.firstIndex(where: { $0.id == current.id }) {
+            let nextIndex = (index + 1) % skins.count
+            appState.selectedSkin = skins[nextIndex]
+        } else {
+            appState.selectedSkin = skins.first
+        }
+    }
+    
+    func previousSkin() {
+        let skins = selectedDefinition.skins
+        guard !skins.isEmpty else { return }
+        
+        if let current = currentSkin, let index = skins.firstIndex(where: { $0.id == current.id }) {
+            let prevIndex = (index - 1 + skins.count) % skins.count
+            appState.selectedSkin = skins[prevIndex]
+        } else {
+            appState.selectedSkin = skins.last
         }
     }
 }
@@ -174,13 +235,18 @@ struct SurvivorCard: View {
 
 struct AnimatedSurvivorView: View {
     let survivor: SurvivorType
+    let skin: SkinDefinition?
     let isUnlocked: Bool
     @State private var frameIndex = 0
     let timer = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
     
+    var assetName: String {
+        return skin?.characterName ?? survivor.assetPrefix
+    }
+    
     var body: some View {
         ZStack {
-            Image(survivor.assetPrefix + "_walk_down_\(frameIndex)")
+            Image(assetName + "_walk_down_\(frameIndex)")
                 .resizable()
                 .interpolation(.none)
                 .aspectRatio(contentMode: .fit)
