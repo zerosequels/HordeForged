@@ -17,15 +17,18 @@ class SurvivorEntity: GKEntity {
     #endif
     
     // Default to paladin for now, but allow passing others
-    init(definition: SurvivorDefinition) {
+    init(definition: SurvivorDefinition, skin: SkinDefinition? = nil) {
         // Init Components first
+        // Determine asset name from skin or default
+        let assetName = skin?.characterName ?? definition.characterName
+        
         // Construct initial frame name: survivor_paladin_walk_down_0
-        let initialImage = "\(definition.characterName)_walk_down_0"
+        let initialImage = "\(assetName)_walk_down_0"
         let texture = SKTexture(imageNamed: initialImage)
         
         self.spriteComponent = SpriteComponent(texture: texture)
-        // Atlas 'survivor_atlas', Base Name = characterName (e.g. 'survivor_paladin')
-        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: definition.characterName)
+        // Atlas 'survivor_atlas', Base Name = assetName (e.g. 'survivor_iron_golem')
+        self.animationComponent = AnimationComponent(atlasName: "survivor_atlas", baseName: assetName)
         
         self.movementComponent = MovementComponent()
         self.healthComponent = HealthComponent(maxHealth: 50)

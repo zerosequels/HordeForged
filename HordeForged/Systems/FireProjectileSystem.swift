@@ -75,6 +75,32 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
             let baseDamage = 15.0 + (Double(ability.level) * 8.0)
             triggerSmite(from: source, damage: baseDamage * damageMult)
             
+        case "wind_slash", "dark_sever", "sanguine_bolt", "vine_lash", "stone_throw", "tidal_wave", "fireball", "iaido", "magic_missile", "boulder":
+             // Standard Projectile Skills
+             // Calculate damage (Generic formula for now: 10 + 5/lvl)
+             // Some might be stronger/weaker, but this is a first pass.
+             // Iaido is fast/low dmg, Boulder is slow/high dmg?
+             // Helper to get base damage per ID? Or just switch:
+            var baseDamage = 10.0 + (Double(ability.level) * 5.0)
+            
+            if ability.definition.id == "boulder" || ability.definition.id == "fireball" {
+                baseDamage = 20.0 + (Double(ability.level) * 10.0)
+            } else if ability.definition.id == "iaido" || ability.definition.id == "stone_throw" {
+                 baseDamage = 8.0 + (Double(ability.level) * 4.0)
+            }
+            
+            fireProjectile(from: source, damage: baseDamage * damageMult, textureName: ability.definition.projectileName, rotationOffset: ability.definition.projectileRotationOffset)
+
+        case "tremor", "divine_decree", "arcane_strike":
+            // Blast/Area Skills
+            var baseDamage = 20.0 + (Double(ability.level) * 10.0)
+            if ability.definition.id == "arcane_strike" {
+                baseDamage = 15.0 + (Double(ability.level) * 5.0) // Lower dmg, faster cooldown usually
+            }
+             
+            // Calls triggerRadialBlast - might need param for texture/color later
+            triggerRadialBlast(at: position, damage: baseDamage * damageMult)
+            
         default:
             print("Unknown ability activated: \(ability.definition.name)")
         }

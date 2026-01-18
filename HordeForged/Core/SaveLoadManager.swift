@@ -81,6 +81,10 @@ public class SaveLoadManager {
     }
     
     public func isSurvivorUnlocked(_ type: SurvivorType) -> Bool {
+        #if DEBUG
+        return true
+        #endif
+        
         if type.isUnlockedByDefault { return true }
         
         guard let save = load() else { return false }
