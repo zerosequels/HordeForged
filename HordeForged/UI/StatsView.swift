@@ -34,6 +34,9 @@ struct StatsView: View {
     
     var onDismiss: () -> Void
     
+    @State private var selectedItem: ItemDefinition? = nil
+    @State private var selectedAbility: AbilityInstance? = nil
+    
     var body: some View {
         ZStack {
             Color.black.opacity(0.9)
@@ -51,38 +54,70 @@ struct StatsView: View {
                         // Active Abilities
                         sectionHeader(title: "Active Abilities")
                         ForEach(activeAbilities, id: \.definition.id) { ability in
-                            HStack {
-                                Text(ability.definition.name)
-                                Spacer()
-                                Text("Level \(ability.level)")
+                            Button(action: {
+                                selectedAbility = ability
+                            }) {
+                                HStack {
+                                    // Ability Icon
+                                    Image(ability.definition.iconName)
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color.gray.opacity(0.3))
+                                        )
+                                        .cornerRadius(8)
+                                        .padding(.trailing, 8)
+                                    
+                                    Text(ability.definition.name)
+                                        .fontWeight(.bold)
+                                    Spacer()
+                                    Text("Level \(ability.level)")
+                                }
+                                .foregroundColor(.white)
+                                .padding(.horizontal)
+                                .contentShape(Rectangle())
                             }
-                            .foregroundColor(.white)
-                            .padding(.horizontal)
                         }
                         
                         // Passive Abilities
                         sectionHeader(title: "Passive Abilities")
                         ForEach(passiveAbilities, id: \.definition.id) { ability in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(ability.definition.name)
-                                    if let mod = ability.definition.modifiers.first {
-                                        // Calculate bonus: Value * Level * 100
-                                        let val = mod.value * Double(ability.level) * 100
-                                        let typeName = mod.type == .movementSpeed ? "Move Speed" : (mod.type == .damage ? "Damage" : "Stat")
-                                        Text("+\(String(format: "%.0f", val))% \(typeName)")
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
+                            Button(action: {
+                                selectedAbility = ability
+                            }) {
+                                HStack {
+                                    // Ability Icon
+                                    Image(ability.definition.iconName)
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color.gray.opacity(0.3))
+                                        )
+                                        .cornerRadius(8)
+                                        .padding(.trailing, 8)
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text(ability.definition.name)
+                                        if let mod = ability.definition.modifiers.first {
+                                            // Calculate bonus: Value * Level * 100
+                                            let val = mod.value * Double(ability.level) * 100
+                                            let typeName = mod.type == .movementSpeed ? "Move Speed" : (mod.type == .damage ? "Damage" : "Stat")
+                                            Text("+\(String(format: "%.0f", val))% \(typeName)")
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
+                                        }
                                     }
+                                    Spacer()
+                                    Text("Level \(ability.level)")
                                 }
-                                Spacer()
-                                Text("Level \(ability.level)")
+                                .foregroundColor(.white)
+                                .padding(.horizontal)
+                                .contentShape(Rectangle())
                             }
-                            .foregroundColor(.white)
-                            .padding(.horizontal)
                         }
                         
-                        // Items
                         // Items
                         sectionHeader(title: "Items")
                         ForEach(Array(items.keys.sorted(by: { $0.name < $1.name })), id: \.id) { item in
@@ -90,6 +125,17 @@ struct StatsView: View {
                                 selectedItem = item
                             }) {
                                 HStack {
+                                    // Item Icon
+                                    Image(item.iconName)
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color.gray.opacity(0.3))
+                                        )
+                                        .cornerRadius(8)
+                                        .padding(.trailing, 8)
+                                        
                                     Text(item.name)
                                     Spacer()
                                     Text("x\(items[item]!)")
@@ -125,10 +171,10 @@ struct StatsView: View {
                 .cornerRadius(8)
                 .padding(.bottom)
             }
-            // Blur background when popup is active?
-            .blur(radius: selectedItem != nil ? 3 : 0)
+            // Blur background when popup is active
+            .blur(radius: (selectedItem != nil || selectedAbility != nil) ? 3 : 0)
             
-            // Popup Overlay
+            // Popup Overlay for Items
             if let item = selectedItem {
                 ItemPickupView(item: item, count: items[item] ?? 0) {
                     selectedItem = nil
@@ -136,10 +182,17 @@ struct StatsView: View {
                 .transition(.opacity)
                 .zIndex(1) // Ensure on top
             }
+            
+            // Popup Overlay for Abilities
+            if let ability = selectedAbility {
+                AbilityDetailView(ability: ability) {
+                    selectedAbility = nil
+                }
+                .transition(.opacity)
+                .zIndex(2) // Ensure on top
+            }
         }
     }
-    
-    @State private var selectedItem: ItemDefinition? = nil
     
     func sectionHeader(title: String) -> some View {
         Text(title)
