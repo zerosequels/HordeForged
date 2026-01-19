@@ -4,7 +4,7 @@ let Vampirism = AbilityDefinition(
     id: "vampirism",
     name: "Vampirism",
     description: "Increases max health.",
-    iconName: "icon_vampirism",
+    iconName: "vampirism",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

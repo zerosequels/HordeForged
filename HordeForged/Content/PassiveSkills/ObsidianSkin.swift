@@ -4,7 +4,7 @@ let ObsidianSkin = AbilityDefinition(
     id: "obsidian_skin",
     name: "Obsidian Skin",
     description: "Greatly increases max health.",
-    iconName: "icon_obsidian_skin",
+    iconName: "obsidian_skin",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

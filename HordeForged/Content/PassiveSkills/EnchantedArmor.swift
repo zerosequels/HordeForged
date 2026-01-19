@@ -4,7 +4,7 @@ let EnchantedArmor = AbilityDefinition(
     id: "enchanted_armor",
     name: "Enchanted Armor",
     description: "Increases max health.",
-    iconName: "icon_enchanted_armor",
+    iconName: "enchanted_armor",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

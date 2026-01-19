@@ -4,7 +4,7 @@ let Tailwind = AbilityDefinition(
     id: "tailwind",
     name: "Tailwind",
     description: "Increases movement usage and attack speed.",
-    iconName: "icon_tailwind",
+    iconName: "tailwind",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

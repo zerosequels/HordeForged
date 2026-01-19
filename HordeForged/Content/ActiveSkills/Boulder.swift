@@ -4,7 +4,7 @@ let Boulder = AbilityDefinition(
     id: "boulder",
     name: "Boulder",
     description: "Propels a massive boulder that crushes enemies.",
-    iconName: "icon_boulder",
+    iconName: "boulder",
     projectileName: "projectile_boulder",
     type: .active,
     rarity: .common,

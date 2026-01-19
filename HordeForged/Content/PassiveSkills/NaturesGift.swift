@@ -4,7 +4,7 @@ let NaturesGift = AbilityDefinition(
     id: "natures_gift",
     name: "Nature's Gift",
     description: "Increases max health.",
-    iconName: "icon_natures_gift",
+    iconName: "natures_gift",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

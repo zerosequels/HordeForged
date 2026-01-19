@@ -4,7 +4,7 @@ let Combustion = AbilityDefinition(
     id: "combustion",
     name: "Combustion",
     description: "Increases damage.",
-    iconName: "icon_combustion",
+    iconName: "combustion",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

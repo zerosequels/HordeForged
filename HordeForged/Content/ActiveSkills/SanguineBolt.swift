@@ -4,7 +4,7 @@ let SanguineBolt = AbilityDefinition(
     id: "sanguine_bolt",
     name: "Sanguine Bolt",
     description: "A blood bolt that drains life from enemies.",
-    iconName: "icon_sanguine_bolt",
+    iconName: "sanguine_bolt",
     projectileName: "projectile_sanguine_bolt",
     type: .active,
     rarity: .common,

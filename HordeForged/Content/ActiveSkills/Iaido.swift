@@ -4,7 +4,7 @@ let Iaido = AbilityDefinition(
     id: "iaido",
     name: "Iaido",
     description: "A lightning-fast blade draw.",
-    iconName: "icon_iaido",
+    iconName: "iaido",
     projectileName: "projectile_slash", // Reusing or generic
     type: .active,
     rarity: .common,

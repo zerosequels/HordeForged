@@ -4,7 +4,7 @@ let Focus = AbilityDefinition(
     id: "focus",
     name: "Focus",
     description: "Increases critical hit chance.",
-    iconName: "icon_focus",
+    iconName: "focus",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

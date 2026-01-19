@@ -4,7 +4,7 @@ let Fireball = AbilityDefinition(
     id: "fireball",
     name: "Fireball",
     description: "Launches a fiery orb that explodes on impact.",
-    iconName: "icon_fireball",
+    iconName: "fireball",
     projectileName: "projectile_fireball",
     type: .active,
     rarity: .common,

@@ -4,7 +4,7 @@ let Tremor = AbilityDefinition(
     id: "tremor",
     name: "Tremor",
     description: "Slams the ground, dealing damage and knockback in an area.",
-    iconName: "icon_tremor",
+    iconName: "tremor",
     projectileName: nil, // Blast type
     type: .active,
     rarity: .common,

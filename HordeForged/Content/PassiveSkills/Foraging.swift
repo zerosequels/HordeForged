@@ -4,7 +4,7 @@ let Foraging = AbilityDefinition(
     id: "foraging",
     name: "Foraging",
     description: "Increases movement speed.",
-    iconName: "icon_foraging",
+    iconName: "foraging",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

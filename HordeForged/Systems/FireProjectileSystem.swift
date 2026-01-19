@@ -67,13 +67,13 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
             // Base 20 + 10 per level
             // Level 1 = 30, Level 10 = 120
             let baseDamage = 20.0 + (Double(ability.level) * 10.0)
-            triggerRadialBlast(at: position, damage: baseDamage * damageMult)
+            triggerRadialBlast(at: position, damage: baseDamage * damageMult, textureName: "projectile_thunderclap")
             
         case "smite":
             // Smite Logic: Lightning on nearest enemy
             // Damage: Base 15 + 8/lvl
             let baseDamage = 15.0 + (Double(ability.level) * 8.0)
-            triggerSmite(from: source, damage: baseDamage * damageMult)
+            triggerSmite(from: source, damage: baseDamage * damageMult, textureName: ability.definition.projectileName)
             
         case "wind_slash", "dark_sever", "sanguine_bolt", "vine_lash", "stone_throw", "tidal_wave", "fireball", "iaido", "magic_missile", "boulder":
              // Standard Projectile Skills
@@ -99,22 +99,44 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
             }
              
             // Calls triggerRadialBlast - might need param for texture/color later
-            triggerRadialBlast(at: position, damage: baseDamage * damageMult)
+            let textureName = ability.definition.projectileName // Should be projectile_tremor etc if set
+            triggerRadialBlast(at: position, damage: baseDamage * damageMult, textureName: textureName)
             
         default:
             print("Unknown ability activated: \(ability.definition.name)")
         }
     }
     
-    func triggerRadialBlast(at position: CGPoint, damage: Double) {
+    func triggerRadialBlast(at position: CGPoint, damage: Double, textureName: String? = nil) {
         
         let timePerFrame = 1.0 / 24.0
         // Load textures for animation
         var textures: [SKTexture] = []
-        for i in 0...15 {
-            textures.append(SKTexture(imageNamed: "Projectiles/projectile_thunderclap_\(i)"))
+        
+        // Try to load animation frames first if textureName is provided
+        if let name = textureName {
+            // Check for frames 0..15? Or just use single texture if frames fail?
+            // For now, let's assume if there are no frames, we use the single texture.
+            // Loading 16 frames blindly might be slow/error prone if they don't exist.
+            // Let's try to load frame 0. If it exists, assume animation.
+            let frame0 = SKTexture(imageNamed: "\(name)_0")
+             // SKTexture(imageNamed:) returns a placeholder if not found? No, it returns a texture that might be empty/dummy?
+             // Actually SpriteKit behavior for missing image is tricky.
+             // But simpler approach: Just use the single texture and scale it up.
+             // Generating 16 frames of animation is hard for the user.
+             // Scaling one sprite is easy.
+             textures.append(SKTexture(imageNamed: name))
+        } else {
+             // Fallback
+             for i in 0...15 {
+                textures.append(SKTexture(imageNamed: "Projectiles/projectile_thunderclap_\(i)"))
+             }
         }
-        let totalDuration = Double(textures.count) * timePerFrame
+        
+        // If we only have 1 texture (the single asset), we don't animate frames, just scale.
+        // If we have 16 (fallback), we animate.
+        
+        let totalDuration = 0.5 // Fixed duration for blast?
         
         // Create Entity
         let blastEntity = GKEntity()
@@ -127,17 +149,23 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         // blastNode.colorBlendFactor = 0 // Ensure original colors
         
         // Animation Actions
-        let animation = SKAction.animate(with: textures, timePerFrame: timePerFrame)
-        let scaleUp = SKAction.scale(to: 3.5, duration: totalDuration)
-        let group = SKAction.group([animation, scaleUp])
+        var group: SKAction
+        if textures.count > 1 {
+             let animation = SKAction.animate(with: textures, timePerFrame: totalDuration / Double(textures.count))
+             let scaleUp = SKAction.scale(to: 3.5, duration: totalDuration)
+             group = SKAction.group([animation, scaleUp, SKAction.fadeOut(withDuration: totalDuration)])
+             // Added fadeout to make single sprite look better?
+        } else {
+            // Single sprite expansion
+            let scaleUp = SKAction.scale(to: 3.5, duration: totalDuration)
+            let fadeOut = SKAction.fadeOut(withDuration: totalDuration)
+            group = SKAction.group([scaleUp, fadeOut])
+        }
+        
         // We let BlastSystem handle removal, but adding this doesn't hurt visually
         blastNode.run(group)
         
         let spriteComp = SpriteComponent(texture: textures.first!)
-        // Swap the node created by component with our configured one? 
-        // Or just configure the component's node. 
-        // SpriteComponent often creates a node. Let's use the component's node logic if we can, or just force ours.
-        // Assuming SpriteComponent takes a texture and makes a node.
         if let node = spriteComp.node as? SKSpriteNode {
             node.texture = textures.first
             node.position = position
@@ -148,19 +176,14 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         blastEntity.addComponent(spriteComp)
         
         // 2. Logic (BlastComponent)
-        // Max Radius? Visual scale 3.5. 
-        // Base size of texture? 
-        // Assuming 96x96 (standard projectile) or similar. 
-        // If 100x100, scale 3.5 = 350 size -> 175 radius.
-        // Let's estimate 150-180.
         let maxRadius: CGFloat = 175.0
         
         let blastComp = BlastComponent(
             center: position,
             maxRadius: maxRadius,
             duration: totalDuration,
-            baseDamage: damage, // Use passed damage
-            maxKnockback: 400.0 // User requested variable knockback, component handles it relative to max.
+            baseDamage: damage, 
+            maxKnockback: 400.0 
         )
         blastEntity.addComponent(blastComp)
         
@@ -210,7 +233,7 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
         }
     }
     
-    func triggerSmite(from source: GKEntity, damage: Double) {
+    func triggerSmite(from source: GKEntity, damage: Double, textureName: String? = nil) {
         guard let gameScene = scene as? GameScene,
               let sourceSprite = source.component(ofType: SpriteComponent.self) else { return }
         
@@ -242,21 +265,39 @@ class FireProjectileSystem: GKComponentSystem<GKComponent> {
                  print("[Skill] Smite: Striking target at \(targetPos) with \(damage) damage")
             }
             
-            let bolt = SKShapeNode()
-            let path = CGMutablePath()
-            path.move(to: CGPoint(x: targetPos.x, y: targetPos.y + 300)) // Start from sky
-            path.addLine(to: targetPos)
-            bolt.path = path
-            bolt.strokeColor = .cyan
-            bolt.lineWidth = 5
-            bolt.glowWidth = 5
-            scene.addChild(bolt)
-            
-            bolt.run(SKAction.sequence([
-                SKAction.wait(forDuration: 0.1),
-                SKAction.fadeOut(withDuration: 0.1),
-                SKAction.removeFromParent()
-            ]))
+            if let textureName = textureName {
+                 // Use Sprite Asset for Smite (Beam)
+                 let beam = SKSpriteNode(imageNamed: textureName)
+                 beam.position = targetPos
+                 beam.anchorPoint = CGPoint(x: 0.5, y: 0.0) // Anchor at bottom
+                 beam.size = CGSize(width: 100, height: 600) // Tall beam
+                 beam.zPosition = 150
+                 scene.addChild(beam)
+                 
+                 beam.run(SKAction.sequence([
+                    SKAction.scaleX(to: 0.1, duration: 0.3), // Narrow out
+                    SKAction.fadeOut(withDuration: 0.1),
+                    SKAction.removeFromParent()
+                 ]))
+                 // Optional: Add a flash at the base?
+            } else {
+                // Fallback to Shape Node
+                let bolt = SKShapeNode()
+                let path = CGMutablePath()
+                path.move(to: CGPoint(x: targetPos.x, y: targetPos.y + 300)) // Start from sky
+                path.addLine(to: targetPos)
+                bolt.path = path
+                bolt.strokeColor = .cyan
+                bolt.lineWidth = 5
+                bolt.glowWidth = 5
+                scene.addChild(bolt)
+                
+                bolt.run(SKAction.sequence([
+                    SKAction.wait(forDuration: 0.1),
+                    SKAction.fadeOut(withDuration: 0.1),
+                    SKAction.removeFromParent()
+                ]))
+            }
             
             // Damage + AOE
             // AOE Radius 50

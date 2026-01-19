@@ -4,7 +4,7 @@ let Conviction = AbilityDefinition(
     id: "conviction",
     name: "Conviction",
     description: "Increases max health.",
-    iconName: "icon_conviction",
+    iconName: "conviction",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

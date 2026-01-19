@@ -4,7 +4,7 @@ let ArcaneKnowledge = AbilityDefinition(
     id: "arcane_knowledge",
     name: "Arcane Knowledge",
     description: "Increases barrier gained per experience.",
-    iconName: "icon_arcane_knowledge",
+    iconName: "arcane_knowledge",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

@@ -4,7 +4,7 @@ let Stability = AbilityDefinition(
     id: "stability",
     name: "Stability",
     description: "Increases max health.",
-    iconName: "icon_stability",
+    iconName: "stability",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

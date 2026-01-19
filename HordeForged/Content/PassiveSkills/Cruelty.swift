@@ -4,7 +4,7 @@ let Cruelty = AbilityDefinition(
     id: "cruelty",
     name: "Cruelty",
     description: "Increases damage dealt.",
-    iconName: "icon_cruelty",
+    iconName: "cruelty",
     type: .passive,
     rarity: .common,
     maxLevel: 10,

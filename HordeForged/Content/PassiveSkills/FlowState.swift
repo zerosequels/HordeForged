@@ -4,7 +4,7 @@ let FlowState = AbilityDefinition(
     id: "flow_state",
     name: "Flow State",
     description: "Increases attack speed.",
-    iconName: "icon_flow_state",
+    iconName: "flow_state",
     type: .passive,
     rarity: .common,
     maxLevel: 10,
